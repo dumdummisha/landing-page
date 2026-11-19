@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/privacy",
+      "destination": "https://docs.dumdummisha.ai/privacy",
+      "permanent": true
+    }
+  ]
+}
