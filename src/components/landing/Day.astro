@@ -65,7 +65,7 @@ const STEPS = [
     pill: { tone: 'work', icon: 'progress', label: 'Covering for you' },
   },
   {
-    eyebrow: '13:00 · Quiet again',
+    eyebrow: '12:15 · Quiet again',
     text: 'Nothing else needed you. Anything that does waits in your self-DM.',
     face: 'default',
     pill: { tone: 'neutral', icon: 'dot', label: 'Quiet again' },
@@ -81,7 +81,6 @@ const HOURS = [
   { label: '10', y: 42 },
   { label: '11', y: 60 },
   { label: '12', y: 78 },
-  { label: '13', y: 94 },
 ]
 
 const SCRAPS = [
@@ -292,7 +291,7 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
   @property --min {
     syntax: '<integer>';
     inherits: false;
-    initial-value: 780;
+    initial-value: 735;
   }
 
   @property --h {
@@ -562,5 +561,5 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
   @keyframes dd-day-m4 { from { --min: 631; } to { --min: 642; } }
   @keyframes dd-day-m5 { from { --min: 642; } to { --min: 667; } }
   @keyframes dd-day-m6 { from { --min: 667; } to { --min: 718; } }
-  @keyframes dd-day-m7 { from { --min: 718; } to { --min: 780; } }
+  @keyframes dd-day-m7 { from { --min: 718; } to { --min: 735; } }
 </style>
