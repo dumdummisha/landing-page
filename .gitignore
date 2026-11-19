@@ -20,3 +20,5 @@ tmp/
 .idea/
 .vscode/
 src/styles/tokens.css
+.vercel
+.env*

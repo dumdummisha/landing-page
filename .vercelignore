@@ -1,0 +1,11 @@
+# Upload only what the build needs: Vercel does not read .gitignore for a CLI deploy.
+.astro
+.claude
+.env
+.env.local
+.idea
+.opencode
+dist
+node_modules
+tmp
+src/styles/tokens.css
