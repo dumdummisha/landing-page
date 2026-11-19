@@ -1,0 +1,10 @@
+---
+// A link that opens in a new tab, for pages off this site such as the docs. Screen readers hear that it does.
+import type { HTMLAttributes } from 'astro/types'
+
+type Props = { href: string } & HTMLAttributes<'a'>
+
+const attributes = Astro.props
+---
+
+<a target="_blank" rel="noopener noreferrer" {...attributes}><slot /><span class="dd-vh"> (opens in a new tab)</span></a>

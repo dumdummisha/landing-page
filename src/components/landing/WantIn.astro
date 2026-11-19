@@ -1,4 +1,5 @@
 ---
+import NewTabLink from '../actions/NewTabLink.astro'
 import Mascot from '../mascot/Mascot.astro'
 import InviteButton from './InviteButton.astro'
 ---
@@ -11,7 +12,7 @@ import InviteButton from './InviteButton.astro'
     </p>
     <div class="dd-want__cta">
       <InviteButton size="lg" />
-      <a href="https://docs.dumdummisha.ai/start/why">Read the docs first</a>
+      <NewTabLink href="https://docs.dumdummisha.ai/start/why">Read the docs first</NewTabLink>
     </div>
   </div>
   <div class="dd-peek" style="transform:rotate(var(--tilt-4));right:56px;bottom:-120px"><Mascot size={300} isLabelled /></div>

@@ -12,7 +12,7 @@ import EmmaAsks from './EmmaAsks.astro'
 const LINKS = [
   { href: '#does', label: 'What I do' },
   { href: '#how', label: 'How it works' },
-  { href: 'https://docs.dumdummisha.ai/start/why', label: 'Docs' },
+  { href: 'https://docs.dumdummisha.ai/start/why', label: 'Docs', isNewTab: true },
   { href: '#faq', label: 'FAQ' },
 ]
 ---
@@ -29,7 +29,9 @@ const LINKS = [
         </p>
         <div class="dd-hero__cta">
           <InviteButton size="lg" />
-          <Button href="https://docs.dumdummisha.ai/start/why" variant="secondary" size="lg">Read the docs</Button>
+          <Button href="https://docs.dumdummisha.ai/start/why" target="_blank" rel="noopener noreferrer" variant="secondary" size="lg"
+            >Read the docs<span class="dd-vh"> (opens in a new tab)</span></Button
+          >
         </div>
         <p class="dd-hero__pilot">Invite-only pilot. Free for now, on your own Claude subscription.</p>
       </div>
