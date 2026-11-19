@@ -65,7 +65,7 @@ const STEPS = [
     pill: { tone: 'work', icon: 'progress', label: 'Covering for you' },
   },
   {
-    eyebrow: '12:15 · Quiet again',
+    eyebrow: '13:00 · Quiet again',
     text: 'Nothing else needed you. Anything that does waits in your self-DM.',
     face: 'default',
     pill: { tone: 'neutral', icon: 'dot', label: 'Quiet again' },
@@ -81,6 +81,7 @@ const HOURS = [
   { label: '10', y: 42 },
   { label: '11', y: 60 },
   { label: '12', y: 78 },
+  { label: '13', y: 94 },
 ]
 
 const SCRAPS = [
@@ -291,7 +292,7 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
   @property --min {
     syntax: '<integer>';
     inherits: false;
-    initial-value: 735;
+    initial-value: 780;
   }
 
   @property --h {
@@ -451,13 +452,14 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
       }
 
       /* The clock scrubs from each moment's time to the next while that moment crosses the focus line, the start
-         spacer from 09:00 to the first. A pane's lines from later in the day show once the clock gets there. */
+         spacer from 09:00 to the first and the end spacer on to 13:00. A pane's lines from later in the day show once the
+         clock gets there: the catch-up at 12:15, as the end spacer starts. */
       .dd-day__time {
         --min: 540;
-        animation-name: dd-day-m0, dd-day-m1, dd-day-m2, dd-day-m3, dd-day-m4, dd-day-m5, dd-day-m6, dd-day-m7;
+        animation-name: dd-day-m0, dd-day-m1, dd-day-m2, dd-day-m3, dd-day-m4, dd-day-m5, dd-day-m6, dd-day-m7, dd-day-m8;
         animation-timing-function: linear;
         animation-fill-mode: forwards;
-        animation-timeline: --c0, --c1, --c2, --c3, --c4, --c5, --c6, --c7;
+        animation-timeline: --c0, --c1, --c2, --c3, --c4, --c5, --c6, --c7, --c8;
         animation-range: cover 0% cover 100%;
       }
 
@@ -562,4 +564,5 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
   @keyframes dd-day-m5 { from { --min: 642; } to { --min: 667; } }
   @keyframes dd-day-m6 { from { --min: 667; } to { --min: 718; } }
   @keyframes dd-day-m7 { from { --min: 718; } to { --min: 735; } }
+  @keyframes dd-day-m8 { from { --min: 735; } to { --min: 780; } }
 </style>
