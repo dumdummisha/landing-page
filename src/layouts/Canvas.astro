@@ -1,0 +1,39 @@
+---
+// The full yellow canvas of the privacy and not-found pages.
+import Base from './Base.astro'
+
+interface Props {
+  title: string
+}
+
+const { title } = Astro.props
+---
+
+<Base title={`${title} · Misha`}>
+  <div class="dd-canvas dd-yellow" style="min-height:100vh">
+    <main class="dd-canvas__mid"><slot /></main>
+  </div>
+</Base>
+
+<style>
+  .dd-canvas {
+    background: var(--misha);
+    min-height: 440px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* The nav brings its own padding, so the canvas pads only what is under it. */
+  .dd-canvas__mid {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    padding: var(--space-6) var(--space-7) var(--space-8);
+  }
+
+  @media (max-width: 760px) {
+    .dd-canvas__mid {
+      padding: var(--space-6) var(--space-4) var(--space-7);
+    }
+  }
+</style>

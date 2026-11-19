@@ -1,0 +1,83 @@
+---
+import Band from '../band/Band.astro'
+import SectionHead from '../band/SectionHead.astro'
+import Feature from '../marketing/Feature.astro'
+import Scribble from '../quirks/Scribble.astro'
+---
+
+<Band id="does">
+  <Scribble class="dd-ticked">
+    (I ticked these myself.)
+    <svg slot="arrow" viewBox="0 0 80 56" width="64" height="44" aria-hidden="true">
+      <path d="M74 6 C 52 2, 30 14, 12 42"></path><path d="M12 42 L14 28 M12 42 L25 36"></path>
+    </svg>
+  </Scribble>
+  <SectionHead eyebrow="What I do" title="The routine part, handled.">
+    Nothing here is a promise to do your whole job. It's the list you'd hand to a slightly dumber you.
+  </SectionHead>
+  <div class="dd-grid3 dd-columns">
+    <Feature
+      icon="chat"
+      tilt={3}
+      title="In Slack"
+      items={[
+        'Picks up messages that need you.',
+        'Replies in the thread, clearly marked as your clone.',
+        'Answers code questions in project channels.',
+        'Chats in the team channels you allow.',
+        'Steps aside when someone wants the real you.',
+      ]}
+    />
+    <Feature
+      icon="branch"
+      tilt={2}
+      title="Behind the scenes"
+      drop={32}
+      items={[
+        'Checks a request is valid before touching anything.',
+        'Drafts the ticket, linked to the thread, and has a second AI review it.',
+        'Writes the code. A second AI reviews it.',
+        'Deploys as far as the project allows and checks the logs.',
+        'Reviews pull requests, too.',
+      ]}
+    />
+    <Feature
+      icon="user"
+      tilt={4}
+      title="For you"
+      items={[
+        'Ask for a catch-up, a ticket or a code explanation.',
+        'Out for lunch? Your clone watches Slack.',
+        'Get updates and answer questions in your self-DM.',
+        'Say in your self-DM who may ask your clone for changes.',
+      ]}
+    />
+  </div>
+</Band>
+
+<style>
+  /* The section's one hand note floats at the right of the heading, arrow first, and steps aside on narrow screens. */
+  :global(.dd-ticked) {
+    position: absolute;
+    right: var(--space-6);
+    top: 104px;
+    flex-direction: row-reverse;
+  }
+
+  @media (max-width: 900px) {
+    :global(.dd-ticked) {
+      display: none !important;
+    }
+  }
+
+  .dd-columns {
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    .dd-columns {
+      gap: var(--space-6);
+    }
+  }
+</style>

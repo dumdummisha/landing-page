@@ -1,0 +1,43 @@
+---
+interface Props {
+  // The conversation's name in a bar above; none for a single message on its own.
+  title?: string
+  isSelfDm?: boolean
+}
+
+const { title, isSelfDm = false } = Astro.props
+---
+
+<div class="dd-chat">
+  {title && <div class="dd-chat__bar">{title}{isSelfDm && <span> (you)</span>}</div>}
+  <div class="dd-chat__body"><slot /></div>
+</div>
+
+<style>
+  .dd-chat {
+    background: var(--surface-300);
+    padding: var(--space-3) 0 var(--space-3);
+  }
+
+  :global(.dd-tint) .dd-chat,
+  :global(.dd-yellow) .dd-chat {
+    background: var(--surface-200);
+  }
+
+  .dd-chat__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 10px 20px 6px;
+    font: 600 14px/20px var(--font-sans);
+    color: var(--ink-muted);
+  }
+
+  .dd-chat__bar span {
+    font-weight: 400;
+  }
+
+  .dd-chat__body {
+    padding: var(--space-1) 0;
+  }
+</style>

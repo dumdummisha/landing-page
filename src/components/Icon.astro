@@ -1,0 +1,27 @@
+---
+// The design system's line icons: 24px grid, 2px stroke, drawn in currentColor by .dd-ico. icons.json is a copy of
+// the design system's assets/Icons/icons.json, never edited here.
+import ICONS from './icons.json'
+
+interface Props {
+  name: keyof typeof ICONS.icons
+}
+
+const { name } = Astro.props
+---
+
+<svg class="dd-ico" viewBox={ICONS.viewBox} aria-hidden="true" set:html={ICONS.icons[name]} />
+
+<style>
+  .dd-ico {
+    width: 1.25em;
+    height: 1.25em;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    vertical-align: -0.25em;
+  }
+</style>

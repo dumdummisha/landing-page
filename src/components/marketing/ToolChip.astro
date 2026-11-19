@@ -1,0 +1,55 @@
+---
+// A supported tool: its name on a white chip with one of our own icons, never the tool's logo. The drop staggers
+// a row of chips.
+import type { ComponentProps } from 'astro/types'
+import Icon from '../Icon.astro'
+
+interface Props {
+  name: string
+  icon: ComponentProps<typeof Icon>['name']
+  drop: number
+}
+
+const { name, icon, drop } = Astro.props
+---
+
+<span class="dd-wordmark dd-wordmark--tool" style={`margin-top:${drop}px`}>
+  <span class="dd-wordmark__ico"><Icon name={icon} /></span>
+  {name}
+</span>
+
+<style>
+  .dd-wordmark {
+    font: 600 18px/24px var(--font-mono);
+    padding: 16px 26px;
+    background: var(--surface-200);
+  }
+
+  .dd-wordmark--tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 26px 16px 20px;
+  }
+
+  .dd-wordmark__ico {
+    width: 34px;
+    height: 34px;
+    margin: -4px 0;
+    background: var(--misha);
+    display: grid;
+    place-items: center;
+    transform: rotate(var(--tilt-2));
+  }
+
+  .dd-wordmark--tool:nth-child(even) .dd-wordmark__ico {
+    transform: rotate(var(--tilt-1));
+  }
+
+  .dd-wordmark__ico :global(.dd-ico) {
+    width: 20px;
+    height: 20px;
+    vertical-align: baseline;
+    color: var(--ink);
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+// One FAQ question. All items share the name "faq", so opening one closes the others without any script.
+interface Props {
+  question: string
+  isOpen?: boolean
+}
+
+const { question, isOpen = false } = Astro.props
+---
+
+<details name="faq" open={isOpen}>
+  <summary>{question}</summary>
+  <p><slot /></p>
+</details>
+
+<style>
+  details {
+    padding: var(--space-5) 0;
+  }
+
+  summary {
+    font: 600 21px/28px var(--font-display);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-5);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* A plus drawn from two bars: the vertical one shrinks to nothing when open, leaving a minus. */
+  summary::after {
+    content: "";
+    flex: none;
+    align-self: center;
+    width: 14px;
+    height: 14px;
+    background:
+      linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat,
+      linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat;
+    transition: background-size 0.25s ease;
+  }
+
+  details[open] summary::after {
+    background-size: 100% 2px, 2px 0;
+  }
+
+  p {
+    margin-top: var(--space-3);
+    max-width: var(--size-lead);
+    color: var(--ink-muted);
+  }
+
+  details[open] p {
+    animation: answer-in 0.3s ease-out;
+  }
+
+  @keyframes answer-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    summary::after {
+      transition: none;
+    }
+
+    details[open] p {
+      animation: none;
+    }
+  }
+</style>

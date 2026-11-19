@@ -1,0 +1,301 @@
+/* The base every page shares: the reset, the bands' colours, layout and text utilities, cards, button grounds, the
+   privacy page's table and lists, and the phone sizes. A component's own look lives in its .astro file. */
+
+/* Reset: page colours and type, no default margins or list styles, links and the focus ring. */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--surface-100);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  font: 400 16px/26px var(--font-sans);
+  color: var(--ink);
+  background: var(--surface-100);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: var(--link);
+  text-underline-offset: 4px;
+}
+
+/* A text link gets a fill behind it on hover; its text keeps its colour. */
+a:hover:not(.dd-btn):not(.dd-brand):not([aria-current]) {
+  background: var(--misha-tint);
+}
+
+.dd-yellow a:hover:not(.dd-btn):not(.dd-brand):not([aria-current]) {
+  background: var(--misha-deep);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Layout: the content width, rows and the two- and three-column grids. */
+
+.dd-wrap {
+  max-width: var(--size-content);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.dd-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.dd-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.dd-grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+/* Text: quieter text, the mono labels above headings and under figures, inline code and text only screen readers
+   read. */
+
+.dd-muted {
+  color: var(--ink-muted);
+}
+
+.dd-eyebrow {
+  font: 600 12px/16px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.dd-note {
+  font: 400 12px/18px var(--font-mono);
+  color: var(--ink-muted);
+}
+
+.dd-code {
+  font: 400 0.9em var(--font-mono);
+  background: var(--misha-tint);
+  padding: 2px 7px;
+}
+
+.dd-vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Work under way: the progress icon's three dashes light in turn, 1 s a turn. With reduced motion the dashes stand
+   still, graded bright to dim. Waits on the reader never use this icon: motion is me, stillness is you. */
+
+@keyframes dd-march {
+  0% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  8%,
+  33% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+
+  41%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+}
+
+.dd-ico .dd-w1,
+.dd-ico .dd-w2,
+.dd-ico .dd-w3 {
+  animation: dd-march 1s linear infinite;
+}
+
+.dd-ico .dd-w2 {
+  animation-delay: -667ms;
+}
+
+.dd-ico .dd-w3 {
+  animation-delay: -333ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dd-ico .dd-w1,
+  .dd-ico .dd-w2,
+  .dd-ico .dd-w3 {
+    animation: none;
+  }
+
+  .dd-ico .dd-w2 {
+    opacity: 0.6;
+  }
+
+  .dd-ico .dd-w3 {
+    opacity: 0.3;
+  }
+}
+
+/* Bands: the yellow and the tinted grounds, and how text and links read on yellow. */
+
+.dd-yellow {
+  background: var(--misha);
+  color: var(--on-misha);
+}
+
+.dd-yellow a:not(.dd-btn) {
+  color: var(--ink);
+}
+
+.dd-tint {
+  background: var(--surface-300);
+}
+
+/* Cards: tinted on the page, white on a coloured band. A yellow card stays yellow on a tinted band, so its rule
+   comes after the band rule it has to beat. */
+
+.dd-card {
+  background: var(--surface-300);
+  padding: var(--space-6);
+}
+
+.dd-tint .dd-card,
+.dd-yellow .dd-card {
+  background: var(--surface-200);
+}
+
+.dd-card--yellow,
+.dd-tint .dd-card--yellow {
+  background: var(--misha);
+}
+
+/* Button grounds: a secondary button is white on any pale or yellow ground and pale on white, so it never
+   disappears into the ground it sits on (see src/components/actions/Button.astro). */
+
+.dd-card,
+.dd-tint,
+.dd-yellow,
+.dd-card--yellow {
+  --btn2-bg: var(--surface-200);
+}
+
+.dd-tint .dd-card,
+.dd-yellow .dd-card {
+  --btn2-bg: var(--surface-300);
+}
+
+.dd-tint .dd-card--yellow {
+  --btn2-bg: var(--surface-200);
+}
+
+/* The mascot peeking over an edge: placed by its parent, never in the way of a click. */
+
+.dd-peek {
+  position: absolute;
+  pointer-events: none;
+  line-height: 0;
+}
+
+/* The privacy page: a striped table and lists that lead with an icon. */
+
+.dd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 400 15px/22px var(--font-sans);
+}
+.dd-table th {
+  text-align: left;
+  font: 600 12px/16px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: 10px 16px;
+}
+.dd-table td {
+  padding: 14px 16px;
+  vertical-align: top;
+}
+.dd-table tbody tr:nth-child(odd) {
+  background: var(--surface-300);
+}
+.dd-sec > .dd-table {
+  margin-top: var(--space-4);
+}
+.dd-sec ul.dd-list {
+  list-style: none;
+  padding: 0;
+}
+.dd-sec ul.dd-list li {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+.dd-sec ul.dd-list li + li {
+  margin-top: var(--space-2);
+}
+.dd-sec ul.dd-list .dd-ico {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+}
+
+/* Phones: narrower gutters, one column, smaller display type and the landing page's peeking mascots hidden. Last in
+   the file, so each rule here comes after the rule it narrows. */
+@media (max-width: 760px) {
+  .dd-wrap {
+    padding: 0 var(--space-4);
+  }
+
+  .dd-grid2,
+  .dd-grid3 {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .display-xl {
+    font-size: 52px;
+    line-height: 56px;
+  }
+
+  .heading-1 {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .dd-peek {
+    display: none;
+  }
+}

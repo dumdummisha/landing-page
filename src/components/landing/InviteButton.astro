@@ -1,0 +1,13 @@
+---
+// "Ask for an invite": the one call to action, in the nav, the hero and the closing band. Misha is invite only, so
+// it opens an email to Michal.
+import Button from '../actions/Button.astro'
+
+interface Props {
+  size: 'sm' | 'lg'
+}
+
+const { size } = Astro.props
+---
+
+<Button href="mailto:michal@dumdummisha.ai" size={size}>Ask for an invite</Button>

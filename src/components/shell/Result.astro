@@ -1,0 +1,40 @@
+---
+// A result on the yellow canvas: the mascot showing how it went, a headline, and what it means in the slot. The one
+// button goes in the actions slot. The mascot by meaning: eyes is waiting, done is finished, default is neutral,
+// question is something off.
+import Mascot from '../mascot/Mascot.astro'
+
+interface Props {
+  mood: 'default' | 'done' | 'eyes' | 'question'
+  size: number
+  title: string
+}
+
+const { mood, size, title } = Astro.props
+---
+
+<div class="dd-bare">
+  <div style="display:grid;place-items:center">
+    <Mascot variant={mood} size={size} isLabelled />
+  </div>
+  <h1 class="heading-2">{title}</h1>
+  <p><slot /></p>
+  {
+    Astro.slots.has('actions') && (
+      <div class="dd-row" style="justify-content:center">
+        <slot name="actions" />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .dd-bare {
+    text-align: center;
+    max-width: 460px;
+  }
+
+  .dd-bare > :global(* + *) {
+    margin-top: var(--space-4);
+  }
+</style>

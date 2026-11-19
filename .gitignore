@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.astro/
+*.log
+
+# Local notes and drafts
+tmp/
+
+# Agent settings and state stay local.
+.opencode/
+.claude/
+
+# Environment and secrets
+.env
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+src/styles/tokens.css

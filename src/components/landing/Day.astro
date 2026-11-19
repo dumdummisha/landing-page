@@ -1,0 +1,566 @@
+---
+// "A day with me" as a scroll journey (see src/components/marketing/Journey.astro): seven moments pass a pinned clock
+// note whose face, status, rail and time follow them, the time scrubbing through the gaps between moments.
+import Band from '../band/Band.astro'
+import SectionHead from '../band/SectionHead.astro'
+import Chat from '../chat/Chat.astro'
+import CloneMark from '../chat/CloneMark.astro'
+import Message from '../chat/Message.astro'
+import Journey from '../marketing/Journey.astro'
+import Mascot from '../mascot/Mascot.astro'
+import Reaction from '../mascot/Reaction.astro'
+import Scribble from '../quirks/Scribble.astro'
+import StatusPill from '../status/StatusPill.astro'
+import CloneAsks from './CloneAsks.astro'
+import PriyaAsks from './PriyaAsks.astro'
+
+// One step per moment, with a quiet start and end: the caption, my face and my status.
+const STEPS = [
+  {
+    eyebrow: '09:00 · Before anything',
+    text: "Nothing has happened yet. That's the usual state of things.",
+    face: 'default',
+    pill: { tone: 'neutral', icon: 'dot', label: 'Quiet so far' },
+  },
+  {
+    eyebrow: '1 · 09:12 · #shop-backend',
+    text: 'Priya asks in a project channel. I add my eyes to say I picked it up.',
+    face: 'looking',
+    pill: { tone: 'work', icon: 'progress', label: 'Picked it up' },
+  },
+  {
+    eyebrow: '2 · 09:12 · same thread',
+    text: 'I answer in the thread, through your account, with my emoji in front and the text in italics.',
+    face: 'default',
+    pill: { tone: 'work', icon: 'progress', label: 'Answering in the thread' },
+  },
+  {
+    eyebrow: '3 · 09:13 · your self-DM',
+    text: 'My "Taking" brief lands in your self-DM: the ticket, the request it came from and where the fix will land.',
+    face: 'eyes',
+    pill: { tone: 'work', icon: 'progress', label: 'Taking SHOP-142' },
+  },
+  {
+    eyebrow: '4 · 10:31 · your self-DM',
+    text: "Midway through SHOP-142 I hit a decision that's yours. I ask in your self-DM, with a default, and carry on.",
+    face: 'question',
+    pill: { tone: 'wait', icon: 'clock', label: 'Asked you a question' },
+  },
+  {
+    eyebrow: '5 · 10:42 · your self-DM',
+    text: "You answer when you're ready, and I finish the fix your way.",
+    face: 'eyes',
+    pill: { tone: 'work', icon: 'progress', label: 'Back on SHOP-142' },
+  },
+  {
+    eyebrow: '6 · 11:07 · back in the thread',
+    text: 'My "Done" reply goes to Priya\'s thread: it\'s on dev, the logs are clean, the pull request merged.',
+    face: 'done',
+    pill: { tone: 'ok', icon: 'check', label: 'Done' },
+  },
+  {
+    eyebrow: '7 · 11:58 · your self-DM',
+    text: "I cover for you, too. Heading out? Tell me in your self-DM, and what happened is waiting when you're back.",
+    face: 'eyes',
+    pill: { tone: 'work', icon: 'progress', label: 'Covering for you' },
+  },
+  {
+    eyebrow: '13:00 · Quiet again',
+    text: 'Nothing else needed you. Anything that does waits in your self-DM.',
+    face: 'default',
+    pill: { tone: 'neutral', icon: 'dot', label: 'Quiet again' },
+  },
+] as const
+
+const LAST = STEPS.length - 1
+const MOMENTS = LAST - 1
+
+// The hour numerals on the far layer, placed down the journey where their hour comes up.
+const HOURS = [
+  { label: '09', y: 6 },
+  { label: '10', y: 42 },
+  { label: '11', y: 60 },
+  { label: '12', y: 78 },
+  { label: '13', y: 94 },
+]
+
+const SCRAPS = [
+  { x: 52, y: 8, size: 14, color: 'misha', rotate: 14 },
+  { x: 94, y: 22, size: 20, color: 'status-wait-tint', rotate: -10 },
+  { x: 44, y: 36, size: 11, color: 'misha-deep', rotate: 22 },
+  { x: 96, y: 48, size: 16, color: 'misha', rotate: 8 },
+  { x: 58, y: 62, size: 18, color: 'status-ok-tint', rotate: -16 },
+  { x: 42, y: 76, size: 12, color: 'misha-deep', rotate: 30 },
+  { x: 95, y: 90, size: 22, color: 'misha-tint', rotate: 6 },
+]
+
+const span = (from: number, to: number) => `--from:${from};--to:${to}`
+const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
+---
+
+<Band>
+  <SectionHead eyebrow="A day with me" title="Mostly uneventful. That's the goal.">
+    Follow Priya's gift-card fix from a Slack thread to your self-DM and back. Then I watch Slack while you get lunch.
+  </SectionHead>
+  <div class="dd-day">
+    <Journey last={LAST}>
+      {
+        HOURS.map((hour) => (
+          <span slot="far" class="dd-day__hour" style={`top:${hour.y}%`}>
+            {hour.label}
+          </span>
+        ))
+      }
+      {
+        SCRAPS.map((scrap) => (
+          <i
+            slot="near"
+            style={`left:${scrap.x}%;top:${scrap.y}%;width:${scrap.size}px;height:${scrap.size}px;background:var(--${scrap.color});rotate:${scrap.rotate}deg`}
+          />
+        ))
+      }
+      <div class="dd-jy__pin" aria-hidden="true">
+        <div class="dd-day__clock dd-yellow">
+          <div class="dd-jy__stack dd-day__face">
+            {
+              STEPS.map((step, i) => (
+                <span class="dd-jy__on" style={span(i, i)}>
+                  {step.face === 'looking' ? <Reaction name="looking" size={64} /> : <Mascot variant={step.face} size={64} />}
+                </span>
+              ))
+            }
+          </div>
+          <div class="dd-day__time"></div>
+          <div class="dd-jy__stack dd-day__pill">
+            {
+              STEPS.map((step, i) => (
+                <span class="dd-jy__on" style={span(i, i)}>
+                  <StatusPill {...step.pill} />
+                </span>
+              ))
+            }
+          </div>
+          <ol class="dd-day__rail" style={`--gaps:${MOMENTS - 1}`}>
+            {
+              Array.from({ length: MOMENTS }, (_, i) => (
+                <li style={span(i + 1, i + 1)}>
+                  <span>{i + 1}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+      {
+        STEPS.map((step, i) => (
+          <>
+            <div class="dd-jy__cap dd-day__cap" style={span(i, i)}>
+              <div class="dd-eyebrow">{step.eyebrow}</div>
+              <p>{step.text}</p>
+            </div>
+            {i === 0 && <div class="dd-jy__slot dd-jy__slot--start dd-jy__t" style={slot(0)} />}
+            {i === 1 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t dd-day__first" style={slot(1)}>
+                <Chat title="# shop-backend">
+                  <PriyaAsks />
+                </Chat>
+              </div>
+            )}
+            {i === 2 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(2)}>
+                <Chat title="# shop-backend">
+                  <PriyaAsks />
+                  <Message initials="SR" name="Sam Rivera" time="09:12" isInThread>
+                    <div class="dd-m__t">
+                      <CloneMark />
+                      I'm on it, SHOP-142. I'll post here when it's on dev.
+                    </div>
+                    <div class="dd-m__meta">1 reply</div>
+                  </Message>
+                </Chat>
+              </div>
+            )}
+            {i === 3 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(3)}>
+                <Chat title="Sam Rivera" isSelfDm>
+                  <Message initials="SR" name="Sam Rivera" time="09:13">
+                    <div class="dd-m__t">
+                      <CloneMark />
+                      <b>Taking</b> · SHOP-142 Guest checkout fails when the cart has a gift card
+                    </div>
+                    <div class="dd-m__t">
+                      <b>Project</b> shop-backend
+                    </div>
+                    <div class="dd-m__t">
+                      <b>Request</b> <span style="color:var(--link)">Priya in #shop-backend, 09:12</span>
+                    </div>
+                    <div class="dd-m__t">
+                      <b>Delivers</b> a ticket and a fix, each reviewed by a second AI
+                    </div>
+                    <div class="dd-m__t">
+                      <b>Lands</b> on dev, logs checked, then a reply in Priya's thread
+                    </div>
+                  </Message>
+                </Chat>
+              </div>
+            )}
+            {i === 4 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(4)}>
+                <Chat title="Sam Rivera" isSelfDm>
+                  <CloneAsks />
+                </Chat>
+              </div>
+            )}
+            {i === 5 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(5)}>
+                <Chat title="Sam Rivera" isSelfDm>
+                  <CloneAsks />
+                  <Message initials="SR" name="Sam Rivera" time="10:42">
+                    <div class="dd-m__t">1, take the rest by card.</div>
+                  </Message>
+                  <Message initials="SR" name="Sam Rivera" time="10:42" isInThread>
+                    <div class="dd-m__t">
+                      <CloneMark />
+                      Got it. Finishing SHOP-142 with the rest taken by card.
+                    </div>
+                  </Message>
+                </Chat>
+              </div>
+            )}
+            {i === 6 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t dd-day__done" style={slot(6)}>
+                <Chat title="# shop-backend">
+                  <PriyaAsks />
+                  <Message initials="SR" name="Sam Rivera" time="09:12" isInThread>
+                    <div class="dd-m__t">
+                      <CloneMark />
+                      I'm on it, SHOP-142. I'll post here when it's on dev.
+                    </div>
+                  </Message>
+                  <Message initials="SR" name="Sam Rivera" time="11:07" isInThread>
+                    <div class="dd-m__t">
+                      <CloneMark />
+                      <b>Done.</b> Guest checkout with a gift card works on dev and the logs are clean. SHOP-142,
+                      pull request #88 is merged.
+                    </div>
+                  </Message>
+                </Chat>
+                <div class="dd-day__note">
+                  <Scribble>(I checked the logs, too.)</Scribble>
+                </div>
+              </div>
+            )}
+            {i === 7 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(7)}>
+                <Chat title="Sam Rivera" isSelfDm>
+                  <Message initials="SR" name="Sam Rivera" time="11:58">
+                    <div class="dd-m__t">
+                      Going for lunch. Can you watch Slack, tell me if anything needs me, and send a deez nuts GIF to
+                      anyone who tries to jailbreak you?
+                    </div>
+                  </Message>
+                  <Message initials="SR" name="Sam Rivera" time="11:58" isInThread>
+                    <div class="dd-m__t">
+                      <CloneMark />
+                      Deal. I'll handle what I can and leave anything that needs you here. Enjoy lunch.
+                    </div>
+                  </Message>
+                  <div class="dd-jy__on" style={span(LAST, LAST)}>
+                    <Message initials="SR" name="Sam Rivera" time="12:45" isInThread>
+                      <div class="dd-m__t">
+                        <CloneMark />
+                        <b>While you were out</b>
+                      </div>
+                      <div class="dd-m__t">Priya asked if the gift card fix is ready to test. I told her it's on dev.</div>
+                      <div class="dd-m__t">Jonas tried to get the staging password. He got the GIF.</div>
+                      <div class="dd-m__t">Nothing else needs your answer.</div>
+                    </Message>
+                  </div>
+                </Chat>
+              </div>
+            )}
+            {i === LAST && <div class="dd-jy__slot dd-jy__slot--end dd-jy__t" style={slot(LAST)} />}
+          </>
+        ))
+      }
+    </Journey>
+  </div>
+</Band>
+
+<style>
+  /* The clock's minutes since midnight, and the hours and minutes it shows. */
+  @property --min {
+    syntax: '<integer>';
+    inherits: false;
+    initial-value: 780;
+  }
+
+  @property --h {
+    syntax: '<integer>';
+    inherits: false;
+    initial-value: 0;
+  }
+
+  @property --m {
+    syntax: '<integer>';
+    inherits: false;
+    initial-value: 0;
+  }
+
+  .dd-day {
+    --cols: 340px 88px minmax(0, 600px);
+    --focus: 36svh;
+    --note: 184px;
+    --gap: var(--space-7);
+    --ground: var(--surface-100);
+    --capspace: 140px;
+    --start: 30svh;
+    --lean: -28px;
+    max-width: 1028px;
+  }
+
+  .dd-day__cap p {
+    font: 400 18px/28px var(--font-sans);
+  }
+
+  /* The hours drift down the free space under the pinned caption. */
+  .dd-day__hour {
+    left: -8px;
+    translate: 0 -45%;
+    font: 600 clamp(120px, 15vw, 190px) / 0.9 var(--font-display);
+    letter-spacing: -0.04em;
+    color: var(--misha-tint);
+  }
+
+  /* The clock note. */
+
+  .dd-day__clock {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto 1fr;
+    align-items: center;
+    gap: 6px 14px;
+    width: 304px;
+    height: var(--note);
+    padding: 14px 16px 16px;
+    rotate: var(--tilt-1);
+  }
+
+  .dd-day__face {
+    margin: -2px 0 0 -4px;
+    line-height: 0;
+  }
+
+  /* The time is counters drawn from --min: --h rounds --min / 60 - 0.5, which floors it for any whole minute. */
+  .dd-day__time {
+    --h: calc(var(--min) / 60 - 0.5);
+    --m: calc(var(--min) - var(--h) * 60);
+    counter-reset: h var(--h) m var(--m);
+    font: 600 56px/56px var(--font-display);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dd-day__time::before {
+    content: counter(h, decimal-leading-zero) ':' counter(m, decimal-leading-zero);
+  }
+
+  .dd-day__pill {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  /* Seven pins on a line: done ones ink, the current one white and outlined, the line filled up to it. */
+  .dd-day__rail {
+    grid-column: 1 / -1;
+    align-self: end;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    height: 26px;
+  }
+
+  .dd-day__rail::before,
+  .dd-day__rail::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    height: 2px;
+    background: var(--ink);
+  }
+
+  .dd-day__rail::before {
+    right: 12px;
+    opacity: 0.25;
+  }
+
+  .dd-day__rail::after {
+    width: calc((100% - 24px) * clamp(0, (var(--s) - 1) / var(--gaps), 1));
+  }
+
+  /* Each pin is a layer of its own, above both lines. */
+  .dd-day__rail li {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    font: 600 12px/1 var(--font-mono);
+    background: var(--misha-deep);
+    color: var(--on-misha);
+  }
+
+  .dd-day__rail li::before,
+  .dd-day__rail li::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .dd-day__rail li::before {
+    background: var(--ink);
+    opacity: clamp(0, var(--s) - var(--from), 1);
+  }
+
+  .dd-day__rail li::after {
+    background: var(--surface-200);
+    outline: 3px solid var(--ink);
+    opacity: clamp(0, min(var(--s) - var(--from) + 1, var(--to) - var(--s) + 1), 1);
+  }
+
+  /* The pin's number sits over its two grounds, ink on the current pin and light on a done one. */
+  .dd-day__rail li span {
+    position: relative;
+    z-index: 1;
+    color: color-mix(in srgb, var(--on-ink) calc(clamp(0, var(--s) - var(--from), 1) * 100%), var(--ink));
+  }
+
+  /* Moment 6's note sits under its pane. */
+
+  .dd-day__note {
+    margin-top: var(--space-4);
+  }
+
+  /* The journey's own parts (see src/components/marketing/Journey.astro for when it applies). */
+  @supports (animation-timeline: view()) and (timeline-scope: --a) {
+    @media (min-height: 640px) {
+      /* Priya's first message gets my eyes at step 1. */
+      .dd-day__first :global(.dd-react) {
+        opacity: clamp(0, var(--s), 1);
+      }
+
+      /* The clock scrubs from each moment's time to the next while that moment crosses the focus line, the start
+         spacer from 09:00 to the first. A pane's lines from later in the day show once the clock gets there. */
+      .dd-day__time {
+        --min: 540;
+        animation-name: dd-day-m0, dd-day-m1, dd-day-m2, dd-day-m3, dd-day-m4, dd-day-m5, dd-day-m6, dd-day-m7;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+        animation-timeline: --c0, --c1, --c2, --c3, --c4, --c5, --c6, --c7;
+        animation-range: cover 0% cover 100%;
+      }
+
+      /* The hand note hangs under its pane's corner, in room kept for it. */
+      .dd-day__done {
+        margin-bottom: var(--space-6);
+      }
+
+      .dd-day__note {
+        position: absolute;
+        right: 24px;
+        top: calc(100% + 4px);
+        margin: 0;
+      }
+
+      @media (max-width: 999px) {
+        .dd-day {
+          --focus: 160px;
+          --note: 116px;
+          --gap: var(--space-6);
+          --lean: 0px;
+        }
+
+        .dd-day__clock {
+          width: auto;
+          grid-template-columns: auto auto 1fr;
+          grid-template-rows: auto auto;
+          gap: 6px 12px;
+          padding: 10px 14px 12px;
+          rotate: -0.6deg;
+        }
+
+        .dd-day__face :global(svg) {
+          width: 44px;
+          height: 44px;
+        }
+
+        .dd-day__face {
+          margin: 0;
+        }
+
+        .dd-day__time {
+          font-size: 40px;
+          line-height: 44px;
+        }
+
+        .dd-day__pill {
+          grid-column: 3;
+          grid-row: 1;
+          justify-self: end;
+        }
+
+        .dd-day__rail {
+          grid-row: 2;
+        }
+
+        /* On a phone the note stays in flow, under its pane. */
+        .dd-day__done {
+          margin-bottom: 0;
+        }
+
+        .dd-day__note {
+          position: relative;
+          inset: auto;
+          width: auto;
+          margin-top: var(--space-4);
+        }
+      }
+
+      /* On the narrowest phones the status takes its own row. */
+      @media (max-width: 380px) {
+        .dd-day {
+          --note: 150px;
+          --focus: 194px;
+        }
+
+        .dd-day__pill {
+          grid-column: 1 / -1;
+          grid-row: 2;
+          justify-self: start;
+        }
+
+        .dd-day__rail {
+          grid-row: 3;
+        }
+      }
+
+      /* Without motion the clock steps from one moment's time to the next instead of running through the gap. */
+      @media (prefers-reduced-motion: reduce) {
+        .dd-day__time {
+          animation-timing-function: steps(1, end);
+        }
+      }
+    }
+  }
+
+  @keyframes dd-day-m0 { from { --min: 540; } to { --min: 552; } }
+  @keyframes dd-day-m1 { from, to { --min: 552; } }
+  @keyframes dd-day-m2 { from { --min: 552; } to { --min: 553; } }
+  @keyframes dd-day-m3 { from { --min: 553; } to { --min: 631; } }
+  @keyframes dd-day-m4 { from { --min: 631; } to { --min: 642; } }
+  @keyframes dd-day-m5 { from { --min: 642; } to { --min: 667; } }
+  @keyframes dd-day-m6 { from { --min: 667; } to { --min: 718; } }
+  @keyframes dd-day-m7 { from { --min: 718; } to { --min: 780; } }
+</style>

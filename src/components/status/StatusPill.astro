@@ -1,0 +1,52 @@
+---
+// A status as a tinted pill: always a word and an icon, never colour alone.
+import type { ComponentProps } from 'astro/types'
+import Icon from '../Icon.astro'
+
+interface Props {
+  tone: 'ok' | 'work' | 'wait' | 'neutral'
+  icon: ComponentProps<typeof Icon>['name']
+  label: string
+}
+
+const { tone, icon, label } = Astro.props
+---
+
+<span class={`dd-pill dd-pill--${tone}`}><Icon name={icon} />{label}</span>
+
+<style>
+  .dd-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 600 13px/16px var(--font-sans);
+    padding: 5px 12px 5px 9px;
+    white-space: nowrap;
+  }
+
+  .dd-pill--ok {
+    background: var(--status-ok-tint);
+    color: var(--status-ok);
+  }
+
+  .dd-pill--work {
+    background: var(--misha-tint);
+    color: var(--on-misha);
+  }
+
+  .dd-pill--wait {
+    background: var(--status-wait-tint);
+    color: var(--status-wait);
+  }
+
+  .dd-pill--neutral {
+    background: var(--surface-300);
+    color: var(--ink-muted);
+  }
+
+  :global(.dd-card) .dd-pill--neutral,
+  :global(.dd-yellow) .dd-pill--neutral,
+  :global(.dd-yellow) .dd-pill--work {
+    background: var(--surface-200);
+  }
+</style>

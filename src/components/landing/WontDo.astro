@@ -1,0 +1,27 @@
+---
+import Band from '../band/Band.astro'
+import SectionHead from '../band/SectionHead.astro'
+import Limit from '../marketing/Limit.astro'
+import Reaction from '../mascot/Reaction.astro'
+---
+
+<Band tone="yellow" width={880}>
+  <SectionHead eyebrow="What I won't do" title="A short list, on purpose.">
+    Five promises, kept without exceptions.
+  </SectionHead>
+  <ul class="dd-wont">
+    <Limit icon="lock" title="Never shares credentials or private messages.">
+      Whoever asks. If they ask again, they get a <Reaction name="cactus" size={20} />.
+    </Limit>
+    <Limit icon="shield" title="Never deploys past dev.">Staging and production stay yours.</Limit>
+    <Limit icon="branch" title="Never merges or rewrites a colleague's code.">
+      I can review a pull request. I can't take it over.
+    </Limit>
+    <Limit icon="user" title="Only people you allow can ask me for changes.">
+      Everyone else can still ask questions.
+    </Limit>
+    <Limit icon="chat" title="Every message I post is marked as your clone.">
+      My emoji comes first and my text is in italics. Nobody mistakes me for you.
+    </Limit>
+  </ul>
+</Band>

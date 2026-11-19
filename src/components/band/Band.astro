@@ -1,0 +1,35 @@
+---
+// A full-width page band. Yellow is the main colour, tint its quiet partner; without a tone it sits on the page. A
+// width narrows the content and keeps it at the left edge of the page, set off to one side on purpose.
+interface Props {
+  tone?: 'yellow' | 'tint'
+  id?: string
+  width?: number
+}
+
+const { tone, id, width } = Astro.props
+---
+
+<section class:list={['dd-band', tone && `dd-${tone}`]} id={id}>
+  <div class="dd-wrap">{width ? <div style={`max-width:${width}px`}><slot /></div> : <slot />}</div>
+</section>
+
+<style>
+  /* A layer reaching the window's edges is measured in vw, which counts a classic scrollbar too; the band trims it
+     to the page's width. */
+  .dd-band {
+    padding: var(--space-9) 0;
+    overflow-x: clip;
+  }
+
+  /* A floating note inside a band is placed from the content column. */
+  .dd-wrap {
+    position: relative;
+  }
+
+  @media (max-width: 760px) {
+    .dd-band {
+      padding: var(--space-7) 0;
+    }
+  }
+</style>

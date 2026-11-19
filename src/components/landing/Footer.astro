@@ -1,0 +1,116 @@
+---
+import Icon from '../Icon.astro'
+import Brand from '../navigation/Brand.astro'
+import Scribble from '../quirks/Scribble.astro'
+
+// Only pages that exist get a link, so the footer has the brand and the landing page's own sections.
+const PRODUCT = [
+  { href: '#does', label: 'What I do' },
+  { href: '#how', label: 'How it works' },
+  { href: '#teams', label: 'For teams' },
+  { href: '#faq', label: 'FAQ' },
+  { href: '/privacy', label: 'Privacy' },
+]
+
+// What the landing page downloads, in kilobytes of 1,000 bytes: the files headless Brave fetched for the whole page
+// from the static build, the HTML, CSS, icon and manifest compressed with brotli at quality 5, headers not counted.
+// Measure again when the fonts or the page change.
+const PAGE_KB = 112
+const FONTS_KB = 92
+---
+
+<footer class="dd-footer">
+  <div class="dd-wrap dd-footer__grid">
+    <div>
+      <Brand />
+      <p class="dd-muted" style="margin-top:12px;max-width:260px">Dumber than you, helpful enough.</p>
+      <p class="dd-muted dd-footer__weight">
+        This page is {PAGE_KB}&nbsp;KB, {FONTS_KB}&nbsp;KB of it fonts, because I wanted to look nice. No JavaScript, no cookies, no
+        trackers.
+      </p>
+    </div>
+    <div>
+      <h4>Product</h4>
+      <ul>
+        {
+          PRODUCT.map(({ href, label }) => (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+  <div class="dd-wrap" style="margin-top:var(--space-8)">
+    <Scribble tilt={1}>
+      Built by me. Not great, good enough. Talk to <a
+        class="dd-credit"
+        href="https://www.linkedin.com/in/michaljarnot"
+        target="_blank"
+        rel="noopener noreferrer">Michal<Icon name="external" /><span class="dd-vh"> (opens in a new tab)</span></a
+      > to get the great things.
+    </Scribble>
+  </div>
+</footer>
+
+<style>
+  .dd-footer {
+    padding: var(--space-8) 0;
+    background: var(--surface-300);
+  }
+
+  .dd-footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: var(--space-6);
+  }
+
+  .dd-footer h4 {
+    font: 600 12px/16px var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .dd-footer__weight {
+    margin-top: var(--space-4);
+    max-width: 260px;
+    font: 400 12px/18px var(--font-mono);
+  }
+
+  .dd-footer li + li {
+    margin-top: var(--space-3);
+  }
+
+  .dd-footer li a {
+    color: var(--ink);
+    text-decoration: none;
+    font: 500 15px/20px var(--font-sans);
+  }
+
+  /* The credit's one link is part of the hand note: ink, underlined, in the note's own type. */
+  .dd-credit {
+    color: var(--ink);
+    font: inherit;
+    text-decoration: underline;
+  }
+
+  .dd-credit :global(.dd-ico) {
+    width: 0.7em;
+    height: 0.7em;
+    margin-left: 2px;
+    vertical-align: 0.1em;
+  }
+
+  @media (max-width: 760px) {
+    .dd-footer {
+      padding: var(--space-7) 0;
+    }
+
+    .dd-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

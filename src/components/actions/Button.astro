@@ -1,0 +1,87 @@
+---
+// The design system's flat, square button, as a link: every button on the site goes somewhere.
+import type { HTMLAttributes } from 'astro/types'
+
+type Props = {
+  variant?: 'primary' | 'secondary'
+  size?: 'sm' | 'lg'
+  href: string
+} & HTMLAttributes<'a'>
+
+const { variant = 'primary', size, ...attributes } = Astro.props
+const classes = ['dd-btn', variant !== 'primary' && `dd-btn--${variant}`, size && `dd-btn--${size}`]
+---
+
+<a class:list={classes} {...attributes}>
+  <slot />
+</a>
+
+<style>
+  .dd-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font: 600 16px/20px var(--font-sans);
+    padding: 16px 28px;
+    border: 0;
+    background: var(--misha);
+    color: var(--on-misha);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .dd-btn:hover {
+    background: var(--misha-deep);
+  }
+
+  /* The ground a secondary sits on sets --btn2-bg (src/styles/site.css), so it never matches that ground. */
+  .dd-btn--secondary {
+    background: var(--btn2-bg, var(--surface-300));
+    color: var(--ink);
+  }
+
+  .dd-btn--secondary:hover {
+    background: var(--misha-tint);
+  }
+
+  .dd-btn--sm {
+    padding: 10px 18px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .dd-btn--lg {
+    padding: 22px 40px;
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  /* While the click is down the button turns ink, so the click registers without script. */
+  .dd-btn:active {
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+
+  .dd-btn--secondary:active {
+    background: var(--misha);
+    color: var(--ink);
+  }
+
+  :global(.dd-yellow) .dd-btn:not(.dd-btn--secondary) {
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+
+  :global(.dd-yellow) .dd-btn:not(.dd-btn--secondary):hover {
+    background: var(--ink-muted);
+  }
+
+  /* On yellow, ink is already the primary's fill, so a pressed button turns white. */
+  :global(.dd-yellow) .dd-btn:not(.dd-btn--secondary):active {
+    background: var(--surface-200);
+    color: var(--ink);
+  }
+</style>

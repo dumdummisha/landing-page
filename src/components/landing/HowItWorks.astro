@@ -1,0 +1,688 @@
+---
+// "How it works" as a scroll journey: one request passes the clone, pinned beside it, from the Slack thread to the
+// reply. There is no script. Every card the request reaches is a view timeline whose port is the focus line, and
+// --s, the step, is the last card whose top has crossed it; everything that changes per step reads --s. Without
+// scroll-driven animations the captions sit between their cards and the story shows its end state.
+import Band from '../band/Band.astro'
+import SectionHead from '../band/SectionHead.astro'
+import Chat from '../chat/Chat.astro'
+import CloneMark from '../chat/CloneMark.astro'
+import Message from '../chat/Message.astro'
+import Journey from '../marketing/Journey.astro'
+import Mascot from '../mascot/Mascot.astro'
+import StatusPill from '../status/StatusPill.astro'
+import PriyaAsks from './PriyaAsks.astro'
+
+// One caption per step: 0 is the intro, 1 to 10 the journey, 11 the end.
+const CAPTIONS = [
+  {
+    eyebrow: 'One request, start to finish',
+    title: 'I stay put. The work comes to me.',
+    text: "Follow one request from a Slack thread to a merged pull request. I'm the yellow note, and I'm the one doing the work.",
+  },
+  {
+    eyebrow: '1 of 10 · Slack asks',
+    title: 'It starts in a Slack thread.',
+    text: 'Priya asks in a project channel. I add my eyes to say I picked it up.',
+  },
+  {
+    eyebrow: '2 of 10 · A question',
+    title: "If I'm unsure, I ask you.",
+    text: 'The question goes to your self-DM, not the thread, so nobody watches me guess.',
+  },
+  {
+    eyebrow: '3 of 10 · Your answer',
+    title: 'You answer in one line.',
+    text: 'Your answer comes straight back to me. While I wait, I carry on with what I can.',
+  },
+  {
+    eyebrow: '4 of 10 · Helper: Analysis',
+    title: 'I check the request first.',
+    text: 'A helper on your Mac checks that the request is valid and works out where it goes.',
+  },
+  {
+    eyebrow: '5 of 10 · Helper: Ticket',
+    title: 'I write the ticket.',
+    text: 'Drafted from the thread and linked back to it, so the thread and the ticket point at each other.',
+  },
+  {
+    eyebrow: '6 of 10 · Helper: Code',
+    title: 'I build it on a branch.',
+    text: 'Implemented on its own branch, then opened as a pull request.',
+  },
+  {
+    eyebrow: '7 of 10 · Helper: Review',
+    title: 'A second AI reviews it.',
+    text: 'The ticket and the code are each reviewed by a second AI, not by me.',
+  },
+  {
+    eyebrow: '8 of 10 · Helper: Deploy',
+    title: 'I deploy as far as the project allows.',
+    text: 'How far I go depends on what the project lets me do.',
+  },
+  {
+    eyebrow: '9 of 10 · Helper: Logs',
+    title: 'I read the logs after every deploy.',
+    text: 'Checked after every deploy, before I tell anyone it worked.',
+  },
+  {
+    eyebrow: '10 of 10 · Reply',
+    title: 'I answer in the thread.',
+    text: 'Replies go back to Slack from your account, with my emoji in front and the text in italics, so everyone can tell it was me.',
+  },
+  { eyebrow: 'That was one request', title: 'Then I wait for the next one.' },
+]
+
+const LAST = CAPTIONS.length - 1
+
+// The steps each face shows for; the default face covers two separate spans, so it is drawn twice.
+const FACES = [
+  { variant: 'default', from: 0, to: 1 },
+  { variant: 'question', from: 2, to: 2 },
+  { variant: 'default', from: 3, to: 3 },
+  { variant: 'eyes', from: 4, to: 9 },
+  { variant: 'done', from: 10, to: LAST },
+] as const
+
+const CLONE_PILLS = [
+  { tone: 'neutral', icon: 'dot', label: 'Waiting for a request' },
+  { tone: 'work', icon: 'progress', label: 'Reading the thread' },
+  { tone: 'wait', icon: 'clock', label: 'Waiting for your answer' },
+  { tone: 'work', icon: 'progress', label: 'Got your answer' },
+  { tone: 'work', icon: 'progress', label: 'Working · Analysis' },
+  { tone: 'work', icon: 'progress', label: 'Working · Ticket' },
+  { tone: 'work', icon: 'progress', label: 'Working · Code' },
+  { tone: 'work', icon: 'progress', label: 'Working · Review' },
+  { tone: 'work', icon: 'progress', label: 'Working · Deploy' },
+  { tone: 'work', icon: 'progress', label: 'Working · Logs' },
+  { tone: 'ok', icon: 'check', label: 'Replied in the thread' },
+  { tone: 'ok', icon: 'check', label: 'Ready for the next one' },
+] as const
+
+// Helpers are steps 4 to 9. The nudge sets each card a few pixels off the column.
+const FIRST_HELPER_STEP = 4
+const HELPERS = [
+  { title: 'Analysis', note: 'is the request valid? where does it go?', result: 'valid · cart / gift card', nudge: 0 },
+  { title: 'Ticket', note: 'drafted from the thread, linked back', result: 'SHOP-142 drafted', nudge: 16 },
+  { title: 'Code', note: 'implemented on a branch, pull request', result: 'pull request #88', nudge: 0 },
+  { title: 'Review', note: 'ticket and code, each by a second AI', result: 'both approved', nudge: 20 },
+  { title: 'Deploy', note: 'as far as the project allows', result: 'on dev', nudge: 6 },
+  { title: 'Logs', note: 'checked after every deploy', result: 'clean', nudge: 14 },
+]
+
+// One hand-drawn arrow between the clone's edge (x 6) and the active card's edge (x 114), across the focus line at
+// y 60, reshaped at every step: towards the card from the clone, or back to it from the card, ending a head's length
+// short. Every shape is a start and four absolute curves, so CSS can morph each into the next; step 1 uncurls it
+// from a curl at Priya's card. Dotted is a question or its answer; the work wiggles a little differently
+// every time.
+const CURL = 'M106 54 C100 46 92 50 94 58 C96 66 106 64 104 56 C102 48 90 50 90 60 C90 68 98 70 100 64'
+const ARROWS = [
+  { label: 'asks', labelY: 24, d: 'M106 54 C101 47 94 42 86 39 C78 35 70 34 62 34 C53 35 44 37 36 41 C28 45 21 51 14 58' },
+  {
+    label: 'question',
+    labelY: 110,
+    d: 'M8 66 C14 74 20 79 28 83 C36 86 44 88 53 88 C61 87 70 85 79 81 C87 77 95 72 102 64',
+    isQuestion: true,
+  },
+  {
+    label: 'your answer',
+    labelY: 110,
+    d: 'M106 64 C98 74 89 77 82 76 C74 75 66 71 59 66 C51 61 44 55 36 53 C29 50 22 51 14 58',
+    isQuestion: true,
+  },
+  { label: 'work', labelY: 30, d: 'M8 62 C16 51 24 51 32 62 C40 73 48 73 56 62 C64 51 72 51 80 62 C88 73 96 73 104 62' },
+  { label: 'work', labelY: 24, d: 'M8 58 C15 49 21 47 28 48 C35 50 42 55 50 60 C58 64 66 69 75 70 C84 71 94 68 104 58' },
+  { label: 'work', labelY: 40, d: 'M8 58 C13 63 19 65 24 65 C29 65 35 63 40 58 C51 49 61 49 72 58 C83 67 93 67 104 58' },
+  { label: 'work', labelY: 104, d: 'M8 62 C21 62 33 53 43 46 C53 39 61 34 66 42 C76 58 50 70 46 56 C42 40 74 34 104 58' },
+  { label: 'work', labelY: 30, d: 'M8 54 C13 61 19 66 24 67 C29 68 35 65 40 60 C51 49 61 49 72 58 C83 67 93 68 104 60' },
+  { label: 'work', labelY: 26, d: 'M8 66 C16 57 24 49 32 45 C40 40 48 37 56 37 C64 36 72 38 80 41 C88 45 96 51 104 58' },
+  {
+    label: 'replies',
+    labelY: 108,
+    d: 'M8 56 C16 66 24 73 33 77 C41 82 49 84 58 85 C66 85 74 83 82 79 C90 75 97 70 104 62',
+  },
+]
+
+// Shape k, its stroke and its dashes, for the step k keyframes in the styles below; shape 0 is the curl.
+const morph = [{ d: CURL, isQuestion: false }, ...ARROWS]
+  .map(({ d, isQuestion }, k) =>
+    isQuestion
+      ? `--d${k}:path('${d}');--k${k}:var(--status-wait);--a${k}:2 7`
+      : `--d${k}:path('${d}');--k${k}:var(--ink);--a${k}:none`,
+  )
+  .concat(
+    `--morphs:${ARROWS.map((_, i) => `dd-jr-arrow${i + 1}`).join(',')}`,
+    `--morph-timelines:${ARROWS.map((_, i) => `--c${i + 1}`).join(',')}`,
+  )
+  .join(';')
+
+// Decorative paper on two depths, placed in percent of the journey.
+const PLANES = [
+  { x: 41, y: 8, size: 240, rotate: 5 },
+  { x: 84, y: 22, size: 190, rotate: -7 },
+  { x: 4, y: 38, size: 210, rotate: -4 },
+  { x: 90, y: 54, size: 260, rotate: 8 },
+  { x: 36, y: 70, size: 200, rotate: -6 },
+  { x: 70, y: 88, size: 230, rotate: 4 },
+]
+
+const SCRAPS = [
+  { x: 52, y: 6, size: 14, color: 'misha', rotate: 14 },
+  { x: 94, y: 16, size: 20, color: 'status-wait-tint', rotate: -10 },
+  { x: 44, y: 27, size: 11, color: 'misha-deep', rotate: 22 },
+  { x: 96, y: 37, size: 16, color: 'misha', rotate: 8 },
+  { x: 58, y: 48, size: 18, color: 'status-ok-tint', rotate: -16 },
+  { x: 42, y: 58, size: 12, color: 'misha-deep', rotate: 30 },
+  { x: 95, y: 69, size: 22, color: 'misha-tint', rotate: 6 },
+  { x: 48, y: 80, size: 14, color: 'status-wait-tint', rotate: -24 },
+  { x: 93, y: 91, size: 16, color: 'misha', rotate: 12 },
+]
+
+const span = (from: number, to: number) => `--from:${from};--to:${to}`
+const timeline = (step: number) => `view-timeline-name:--c${step}`
+---
+
+<Band tone="tint" id="how">
+  <SectionHead eyebrow="How it works" title="I listen. My helpers do the work.">
+    Slack sends me requests. Helpers on your Mac take a valid one as far as the project allows: ticket, code, reviews
+    by a second AI, deploy, logs. Anything that needs a decision comes back to you.
+  </SectionHead>
+  <div class="dd-jr">
+    <Journey last={LAST}>
+      {
+        PLANES.map((plane) => (
+          <i
+            slot="far"
+            class="dd-jr__plane"
+            style={`left:${plane.x}%;top:${plane.y}%;width:${plane.size}px;height:${plane.size}px;rotate:${plane.rotate}deg`}
+          />
+        ))
+      }
+      {
+        SCRAPS.map((scrap) => (
+          <i
+            slot="near"
+            style={`left:${scrap.x}%;top:${scrap.y}%;width:${scrap.size}px;height:${scrap.size}px;background:var(--${scrap.color});rotate:${scrap.rotate}deg`}
+          />
+        ))
+      }
+      <div class="dd-jy__pin dd-jr__me">
+        <ol class="dd-jr__ticks" aria-hidden="true">
+          {CAPTIONS.slice(1, LAST).map((_, i) => <li style={span(i + 1, i + 1)} />)}
+        </ol>
+        <div class="dd-jr__clone dd-yellow">
+          <div class="dd-jy__stack dd-jr__face">
+            {
+              FACES.map((face) => (
+                <span class="dd-jy__on" style={span(face.from, face.to)}>
+                  <Mascot variant={face.variant} size={72} />
+                </span>
+              ))
+            }
+          </div>
+          <div>
+            <h3 class="dd-jr__name">Your clone</h3>
+            <p class="dd-jr__where">on your Mac <span>(Claude Code)</span></p>
+          </div>
+          <div class="dd-jy__stack dd-jr__pill" aria-hidden="true">
+            {
+              CLONE_PILLS.map((pill, i) => (
+                <span class="dd-jy__on" style={span(i, i)}>
+                  <StatusPill {...pill} />
+                </span>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+      <svg class="dd-jr__arrow dd-jy__on" style={span(1, ARROWS.length)} viewBox="0 0 144 120" aria-hidden="true">
+        <marker id="dd-jr-head" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path class="dd-jr__head" d="M0 0 L10 5 L0 10 Z"></path>
+        </marker>
+        <path class="dd-jr__line" d={CURL} marker-end="url(#dd-jr-head)" style={morph}></path>
+        {
+          ARROWS.map((arrow, i) => (
+            <text
+              class:list={['dd-jy__on', { 'dd-jr__label--q': arrow.isQuestion }]}
+              style={span(i + 1, i + 1)}
+              x="56"
+              y={arrow.labelY}
+              text-anchor="middle"
+            >
+              {arrow.label}
+            </text>
+          ))
+        }
+      </svg>
+      {
+        CAPTIONS.map((caption, i) => (
+          <>
+            <div class="dd-jy__cap dd-jr__cap" style={span(i, i)}>
+              <div class="dd-eyebrow">{caption.eyebrow}</div>
+              <h3 class="heading-2">{caption.title}</h3>
+              {caption.text && <p>{caption.text}</p>}
+            </div>
+            {i === 0 && <div class="dd-jy__slot dd-jy__slot--start" style="--row:1" />}
+            {i === 1 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t dd-jr__slack" style={`--row:2;${timeline(1)}`}>
+                <Chat title="# shop-backend">
+                  <PriyaAsks />
+                </Chat>
+              </div>
+            )}
+            {i === 2 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={`--row:3;${timeline(2)}`}>
+                <Chat title="Sam Rivera" isSelfDm>
+                  <Message initials="SR" name="Sam Rivera" time="10:31">
+                    <div class="dd-m__t">
+                      <CloneMark />
+                      <b>Question</b> · SHOP-142 When a gift card covers only part of the cart, should the guest pay
+                      the rest by card?
+                    </div>
+                  </Message>
+                </Chat>
+              </div>
+            )}
+            {i === 3 && (
+              <>
+                <div
+                  class="dd-jy__slot dd-jy__card dd-jy__t dd-jy__stack dd-jr__answer"
+                  style={`--row:4;${timeline(3)}`}
+                >
+                  <span class="dd-jy__on dd-jr__waiting" style={span(0, 2)} aria-hidden="true">
+                    <StatusPill tone="wait" icon="clock" label="Waiting for your answer" />
+                  </span>
+                  <div class="dd-jy__on" style={span(3, LAST)}>
+                    <Message initials="SR" name="Sam Rivera" time="10:42">
+                      <div class="dd-m__t">1, take the rest by card.</div>
+                    </Message>
+                  </div>
+                </div>
+                <div class="dd-jr__zone" aria-hidden="true">
+                  <span class="dd-eyebrow">Helpers on your Mac</span>
+                </div>
+              </>
+            )}
+            {i >= FIRST_HELPER_STEP && i < FIRST_HELPER_STEP + HELPERS.length && (
+              <article
+                class="dd-jy__slot dd-jy__card dd-jy__t dd-jr__helper"
+                style={`--row:${i + 1};--nudge:${HELPERS[i - FIRST_HELPER_STEP].nudge}px;${timeline(i)}`}
+              >
+                <div class="dd-jr__helper-top">
+                  <h4 class="heading-3">{HELPERS[i - FIRST_HELPER_STEP].title}</h4>
+                  <span class="dd-jy__stack" aria-hidden="true">
+                    <span class="dd-jy__on" style={span(0, i - 1)}>
+                      <StatusPill tone="neutral" icon="dot" label="Queued" />
+                    </span>
+                    <span class="dd-jy__on" style={span(i, i)}>
+                      <StatusPill tone="work" icon="progress" label="Working" />
+                    </span>
+                    <span class="dd-jy__on" style={span(i + 1, LAST)}>
+                      <StatusPill tone="ok" icon="check" label="Done" />
+                    </span>
+                  </span>
+                </div>
+                <p class="dd-muted">{HELPERS[i - FIRST_HELPER_STEP].note}</p>
+                <span class="dd-jy__on dd-jr__result" style={span(i + 1, LAST)}>
+                  {HELPERS[i - FIRST_HELPER_STEP].result}
+                </span>
+              </article>
+            )}
+            {i === 10 && (
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={`--row:11;${timeline(10)}`}>
+                <Chat title="# shop-backend">
+                  <Message initials="SR" name="Sam Rivera" time="11:07">
+                    <div class="dd-m__t">
+                      <CloneMark />
+                      <b>Done.</b> Guest checkout with a gift card works on dev and the logs are clean. SHOP-142,
+                      pull request #88 is merged.
+                    </div>
+                  </Message>
+                </Chat>
+              </div>
+            )}
+            {i === LAST && (
+              <div class="dd-jy__slot dd-jy__slot--end dd-jy__t" style={`--row:12;${timeline(LAST)}`} />
+            )}
+          </>
+        ))
+      }
+    </Journey>
+  </div>
+  <p class="dd-note dd-jr__legend">Dotted peach lines are questions and your answers. Everything else is work and replies.</p>
+</Band>
+
+<style>
+  .dd-jr {
+    --cols: 340px 104px minmax(0, 540px);
+    --focus: 40svh;
+    --note: 150px;
+    --above: 40px;
+    --ground: var(--surface-300);
+    --capspace: 200px;
+    --start: 30svh;
+    --lean: -30px;
+    max-width: 1060px;
+  }
+
+  .dd-jr__cap p {
+    font: 400 17px/26px var(--font-sans);
+    color: var(--ink-muted);
+  }
+
+  .dd-jr__plane {
+    background: var(--surface-100);
+  }
+
+  .dd-jr__zone,
+  .dd-jr__ticks,
+  .dd-jr__arrow,
+  .dd-jr__legend {
+    display: none;
+  }
+
+  /* The clone's note. */
+
+  .dd-jr__clone {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 12px;
+    width: 300px;
+    height: var(--note);
+    padding: 14px 16px;
+    rotate: var(--tilt-1);
+  }
+
+  .dd-jr__face {
+    margin: -2px 0 0 -4px;
+    line-height: 0;
+  }
+
+  .dd-jr__name {
+    font: 600 24px/28px var(--font-display);
+    letter-spacing: -0.01em;
+    padding-top: 6px;
+  }
+
+  .dd-jr__where {
+    font: 400 13px/18px var(--font-sans);
+    margin-top: 2px;
+  }
+
+  .dd-jr__pill {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  /* The cards. */
+
+  .dd-jr__answer {
+    min-height: 52px;
+    align-items: center;
+    background: var(--surface-200);
+  }
+
+  .dd-jr__waiting {
+    margin: 0 20px 0 70px;
+  }
+
+  .dd-jr__helper {
+    background: var(--surface-200);
+    padding: 16px 18px 14px;
+  }
+
+  .dd-jr__helper-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .dd-jr__helper p {
+    font: 400 14px/22px var(--font-sans);
+    margin-top: 2px;
+  }
+
+  .dd-jr__result {
+    display: inline-block;
+    margin-top: var(--space-2);
+    padding: 4px 8px;
+    font: 400 12px/18px var(--font-mono);
+    background: var(--misha-tint);
+  }
+
+  /* The journey's own parts (see src/components/marketing/Journey.astro for when it applies). */
+  @supports (animation-timeline: view()) and (timeline-scope: --a) {
+    @media (min-height: 640px) {
+      /* The answer joins the question's card. */
+      .dd-jr__answer {
+        margin-top: calc(-1 * var(--space-4));
+      }
+
+      /* Priya's message gets my eyes at step 1. */
+      .dd-jr__slack :global(.dd-react) {
+        opacity: clamp(0, var(--s), 1);
+      }
+
+      /* The helpers' zone is a ground behind their rows, with room for its label above the first and below the
+         last. */
+      .dd-jr__zone {
+        display: block;
+        grid-column: 3;
+        grid-row: 5 / 11;
+        margin-bottom: calc(-1 * var(--space-5));
+        padding: var(--space-5);
+        background: color-mix(in srgb, var(--surface-200) 55%, transparent);
+      }
+
+      .dd-jr__helper {
+        margin: 0 var(--space-5) 0 calc(var(--space-5) + var(--nudge));
+      }
+
+      .dd-jr__zone + .dd-jr__cap + .dd-jr__helper {
+        margin-top: var(--space-8);
+      }
+
+      .dd-jr__helper + .dd-jr__cap + .dd-jy__card:not(.dd-jr__helper) {
+        margin-top: var(--space-5);
+      }
+
+      .dd-jr__ticks {
+        display: flex;
+        gap: 4px;
+        height: var(--above);
+        align-items: start;
+        padding-top: 4px;
+      }
+
+      .dd-jr__ticks li {
+        position: relative;
+        width: 12px;
+        height: 8px;
+        background: var(--misha-tint);
+      }
+
+      .dd-jr__ticks li::before,
+      .dd-jr__ticks li::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+
+      /* Done steps turn ink; the current one is yellow and outlined. */
+      .dd-jr__ticks li::before {
+        background: var(--ink);
+        opacity: clamp(0, var(--s) - var(--from), 1);
+      }
+
+      .dd-jr__ticks li::after {
+        inset: -2px 0;
+        background: var(--misha);
+        outline: 2px solid var(--ink);
+        opacity: clamp(0, min(var(--s) - var(--from) + 1, var(--to) - var(--s) + 1), 1);
+      }
+
+      /* The arrow runs from the clone's edge to where the active card leans to, on the focus line. It needs a path's
+         d as a CSS property and its head's context-stroke; a browser without both goes without it and its legend.
+         Safari parses d without applying it, so only the context-stroke it lacks keeps it out. */
+      @supports (d: path('M0 0')) and (fill: context-stroke) {
+        .dd-jr__legend {
+          display: block;
+          margin-top: var(--space-4);
+        }
+
+        .dd-jr__arrow {
+          display: block;
+          grid-column: 1 / 3;
+          grid-row: 1 / -1;
+          align-self: start;
+          justify-self: end;
+          position: sticky;
+          z-index: 2;
+          width: 144px;
+          height: 120px;
+          margin-top: calc(var(--above) + var(--note) / 2 - 60px);
+          top: calc(var(--focus) - 60px);
+          overflow: visible;
+        }
+      }
+
+      /* Step k reshapes the arrow from shape k - 1 to shape k while its card crosses the focus line and holds it
+         after, like --s. Longhands only, as in Journey.astro. */
+      .dd-jr__line {
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        animation-name: var(--morphs);
+        animation-timing-function: step-start;
+        animation-fill-mode: forwards;
+        animation-timeline: var(--morph-timelines);
+        animation-range: cover 0% cover 100%;
+      }
+
+      .dd-jr__head {
+        fill: context-stroke;
+      }
+
+      .dd-jr__arrow text {
+        font: 400 13px var(--font-sans);
+        fill: var(--ink-muted);
+      }
+
+      .dd-jr__arrow .dd-jr__label--q {
+        fill: var(--status-wait);
+      }
+
+      /* With motion, it springs into each shape, past it and back before it settles, and boils a little in between
+         like a line drawn by hand. */
+      @media (prefers-reduced-motion: no-preference) {
+        .dd-jr__line {
+          animation-timing-function: linear(0, 0.55 10%, 1.25 26%, 0.9 42%, 1.06 58%, 0.98 74%, 1);
+        }
+
+        .dd-jr__arrow {
+          animation-name: dd-jr-boil;
+          animation-duration: 0.6s;
+          animation-timing-function: steps(1);
+          animation-iteration-count: infinite;
+        }
+      }
+
+      /* Phones: the clone's note shrinks to a bar, the focus line sits just under it, and the arrows go. */
+      @media (max-width: 999px) {
+        .dd-jr {
+          --focus: 170px;
+          --note: 92px;
+          --above: 28px;
+          --lean: 0px;
+        }
+
+        .dd-jr__zone {
+          grid-column: 1;
+        }
+
+        .dd-jr__ticks {
+          justify-content: center;
+        }
+
+        .dd-jr__clone {
+          width: auto;
+          gap: 2px 12px;
+          align-items: center;
+          padding: 12px 14px;
+          rotate: -0.6deg;
+        }
+
+        .dd-jr__face {
+          grid-row: 1 / span 2;
+          margin: 0;
+        }
+
+        .dd-jr__face :global(svg) {
+          width: 52px;
+          height: 52px;
+        }
+
+        .dd-jr__name {
+          display: inline;
+          font-size: 20px;
+          line-height: 24px;
+          padding: 0;
+        }
+
+        .dd-jr__where {
+          display: inline;
+          margin-left: 8px;
+          font-size: 12px;
+        }
+
+        .dd-jr__where span {
+          display: none;
+        }
+
+        .dd-jr__clone > div:nth-child(2) {
+          align-self: end;
+        }
+
+        .dd-jr__pill {
+          grid-column: 2;
+          align-self: start;
+        }
+
+        .dd-jr__arrow,
+        .dd-jr__legend {
+          display: none;
+        }
+      }
+    }
+  }
+
+  @keyframes dd-jr-boil {
+    0% {
+      translate: 0 0;
+      rotate: 0deg;
+    }
+
+    33% {
+      translate: 0.5px -0.5px;
+      rotate: 1deg;
+    }
+
+    67% {
+      translate: -0.5px 0.5px;
+      rotate: -0.8deg;
+    }
+  }
+
+  @keyframes dd-jr-arrow1 { from { d: var(--d0); stroke: var(--k0); stroke-dasharray: var(--a0); } to { d: var(--d1); stroke: var(--k1); stroke-dasharray: var(--a1); } }
+  @keyframes dd-jr-arrow2 { from { d: var(--d1); stroke: var(--k1); stroke-dasharray: var(--a1); } to { d: var(--d2); stroke: var(--k2); stroke-dasharray: var(--a2); } }
+  @keyframes dd-jr-arrow3 { from { d: var(--d2); stroke: var(--k2); stroke-dasharray: var(--a2); } to { d: var(--d3); stroke: var(--k3); stroke-dasharray: var(--a3); } }
+  @keyframes dd-jr-arrow4 { from { d: var(--d3); stroke: var(--k3); stroke-dasharray: var(--a3); } to { d: var(--d4); stroke: var(--k4); stroke-dasharray: var(--a4); } }
+  @keyframes dd-jr-arrow5 { from { d: var(--d4); stroke: var(--k4); stroke-dasharray: var(--a4); } to { d: var(--d5); stroke: var(--k5); stroke-dasharray: var(--a5); } }
+  @keyframes dd-jr-arrow6 { from { d: var(--d5); stroke: var(--k5); stroke-dasharray: var(--a5); } to { d: var(--d6); stroke: var(--k6); stroke-dasharray: var(--a6); } }
+  @keyframes dd-jr-arrow7 { from { d: var(--d6); stroke: var(--k6); stroke-dasharray: var(--a6); } to { d: var(--d7); stroke: var(--k7); stroke-dasharray: var(--a7); } }
+  @keyframes dd-jr-arrow8 { from { d: var(--d7); stroke: var(--k7); stroke-dasharray: var(--a7); } to { d: var(--d8); stroke: var(--k8); stroke-dasharray: var(--a8); } }
+  @keyframes dd-jr-arrow9 { from { d: var(--d8); stroke: var(--k8); stroke-dasharray: var(--a8); } to { d: var(--d9); stroke: var(--k9); stroke-dasharray: var(--a9); } }
+  @keyframes dd-jr-arrow10 { from { d: var(--d9); stroke: var(--k9); stroke-dasharray: var(--a9); } to { d: var(--d10); stroke: var(--k10); stroke-dasharray: var(--a10); } }
+</style>

@@ -1,0 +1,35 @@
+---
+// A hand-written note from Misha, slightly crooked. An arrow, when the note points at something, goes in
+// the arrow slot as an SVG.
+interface Props {
+  tilt?: 1 | 3
+  class?: string
+}
+
+const { tilt = 3, class: className } = Astro.props
+---
+
+<div class:list={['dd-scribble', className]} style={`transform:rotate(var(--tilt-${tilt}));`}>
+  <span><slot /></span>
+  <slot name="arrow" />
+</div>
+
+<style>
+  .dd-scribble {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    font: 600 28px/28px var(--font-hand);
+    color: var(--ink);
+  }
+
+  .dd-scribble :global(svg) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    flex: none;
+    margin-top: 6px;
+  }
+</style>

@@ -1,0 +1,34 @@
+---
+import Band from '../band/Band.astro'
+import SectionHead from '../band/SectionHead.astro'
+import FaqItem from '../marketing/FaqItem.astro'
+---
+
+<Band id="faq" width={820}>
+  <SectionHead eyebrow="FAQ" title="Questions, answers first." />
+  <div class="dd-faq">
+    <FaqItem question="Are you going to replace me?" isOpen>
+      No. I'm dumber than you on purpose. I take the routine part and bring you the decisions I can't safely settle.
+    </FaqItem>
+    <FaqItem question="Do you pretend to be me?">
+      No. I post through your Slack account, and every message I post starts with my emoji and is in italics. Nobody mistakes me for you.
+    </FaqItem>
+    <FaqItem question="What can my colleagues ask you?">
+      Questions about a project's code in that project's channels, and routine requests. Only people you allow can ask me
+      for changes. I never share credentials or private messages.
+    </FaqItem>
+    <FaqItem question="Which AI do you use?">
+      Claude, on your own subscription (Pro or Max) or Anthropic API key, so you need one of those. Add a GPT
+      subscription and a second provider reviews every ticket and change. Two providers catch more than one. Without it,
+      a fresh Claude session does the reviewing.
+    </FaqItem>
+    <FaqItem question="Where does my code go?">
+      I run on your Mac, in the Misha app, on your own Claude Code, and the helpers that analyse, write and review code
+      run there too.
+      What I keep and where is on the <a href="/privacy">privacy page</a>.
+    </FaqItem>
+    <FaqItem question="What do you cost?">
+      Nothing.
+    </FaqItem>
+  </div>
+</Band>

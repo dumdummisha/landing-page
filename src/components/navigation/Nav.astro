@@ -1,0 +1,61 @@
+---
+// The top navigation: the brand, the page's links (hidden on a phone) and the actions on the right in the slot.
+// Without links or actions it is just the brand, at the same height as on the landing page.
+import Brand from './Brand.astro'
+
+interface Props {
+  links?: readonly { href: string; label: string }[]
+  isFullName?: boolean
+}
+
+const { links = [], isFullName = false } = Astro.props
+---
+
+<nav class="dd-nav">
+  <Brand isFullName={isFullName} />
+  <div class="dd-nav__links">
+    {links.map(({ href, label }) => <a href={href}>{label}</a>)}
+  </div>
+  <div class="dd-nav__end"><slot /></div>
+</nav>
+
+<style>
+  .dd-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    padding: 28px var(--space-7);
+  }
+
+  .dd-nav__links {
+    display: flex;
+    gap: var(--space-5);
+    margin-left: var(--space-5);
+    font: 500 15px/20px var(--font-sans);
+  }
+
+  .dd-nav__links a {
+    color: var(--ink) !important;
+    text-decoration: none;
+    padding: 4px 10px;
+  }
+
+  /* At least as tall as a small button, so the brand sits at the same height with or without one. */
+  .dd-nav__end {
+    min-height: 38px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 760px) {
+    .dd-nav {
+      padding: var(--space-5) var(--space-4);
+    }
+
+    .dd-nav__links {
+      display: none;
+    }
+  }
+</style>

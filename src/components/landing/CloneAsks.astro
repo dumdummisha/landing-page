@@ -1,0 +1,24 @@
+---
+// My question in Sam's self-DM from the landing page's example day, asked about the same request as everything else.
+import CloneMark from '../chat/CloneMark.astro'
+import Message from '../chat/Message.astro'
+---
+
+<Message initials="SR" name="Sam Rivera" time="10:31">
+  <div class="dd-m__t">
+    <CloneMark />
+    <b>Question</b> · SHOP-142 Guest checkout fails when the cart has a gift card
+  </div>
+  <div class="dd-m__t">
+    <b>Done already</b> The fix for a gift card that covers the whole cart.
+  </div>
+  <div class="dd-m__t">
+    <b>Question</b> When a gift card covers only part of the cart, should the guest pay the rest by card?
+  </div>
+  <div class="dd-m__t">
+    <b>Options</b> 1 · Take the rest by card &nbsp; 2 · Ask them to sign in &nbsp; 3 · Refuse partial gift cards
+  </div>
+  <div class="dd-m__t">
+    <b>Default</b> Take the rest by card. I'll carry on with what doesn't depend on it.
+  </div>
+</Message>

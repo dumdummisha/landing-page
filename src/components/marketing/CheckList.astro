@@ -1,0 +1,35 @@
+---
+// A list where every line is checked off: the benefits on a card.
+import Icon from '../Icon.astro'
+
+interface Props {
+  items: readonly string[]
+}
+
+const { items } = Astro.props
+---
+
+<ul class="dd-cols" style="display:block">
+  {
+    items.map((item) => (
+      <li>
+        <Icon name="check" />
+        <span>{item}</span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .dd-cols li {
+    padding: 10px 0;
+    display: flex;
+    gap: 12px;
+    font: 400 17px/26px var(--font-sans);
+  }
+
+  .dd-cols :global(.dd-ico) {
+    margin-top: 3px;
+    color: var(--ink);
+  }
+</style>

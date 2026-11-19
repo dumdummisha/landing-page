@@ -1,0 +1,28 @@
+---
+// The "I'm on it" reaction under a message, added from your account, so it carries your highlight.
+import Reaction from '../mascot/Reaction.astro'
+---
+
+<span class="dd-react dd-react--you"><Reaction name="looking" size={16} />1</span>
+
+<style>
+  .dd-react {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    margin-right: 6px;
+    padding: 2px 9px;
+    background: var(--surface-200);
+    font: 600 12px/18px var(--font-sans);
+  }
+
+  :global(.dd-tint) .dd-react,
+  :global(.dd-yellow) .dd-react {
+    background: var(--misha-tint);
+  }
+
+  .dd-react--you {
+    background: var(--misha) !important;
+  }
+</style>

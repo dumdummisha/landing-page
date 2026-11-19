@@ -1,0 +1,133 @@
+---
+import Button from '../actions/Button.astro'
+import Chat from '../chat/Chat.astro'
+import CloneMark from '../chat/CloneMark.astro'
+import Message from '../chat/Message.astro'
+import Mascot from '../mascot/Mascot.astro'
+import Nav from '../navigation/Nav.astro'
+import Scribble from '../quirks/Scribble.astro'
+import InviteButton from './InviteButton.astro'
+import PriyaAsks from './PriyaAsks.astro'
+
+const LINKS = [
+  { href: '#does', label: 'What I do' },
+  { href: '#how', label: 'How it works' },
+  { href: '#teams', label: 'For teams' },
+  { href: '#faq', label: 'FAQ' },
+]
+---
+
+<div class="dd-yellow" style="position:relative;overflow:hidden">
+  <Nav links={LINKS}><InviteButton size="sm" /></Nav>
+  <header class="dd-hero">
+    <div class="dd-wrap dd-hero__grid">
+      <div>
+        <h1 class="display-xl">Dumber than you, helpful <span class="dd-mark">enough.</span></h1>
+        <p class="body-l dd-hero__sub">
+          I'm your clone for messages, built by a developer who needed one. I take the "can you check this?" so you can
+          keep working, and bring you the decisions I can't safely make.
+        </p>
+        <div class="dd-hero__cta">
+          <InviteButton size="lg" />
+          <Button href="#how" variant="secondary" size="lg">See how it works</Button>
+        </div>
+      </div>
+      <div style="position:relative">
+        <Chat title="# shop-backend">
+          <PriyaAsks />
+          <Message initials="SR" name="Sam Rivera" time="09:12" isInThread>
+            <div class="dd-m__t"><CloneMark />Gift cards skip the guest checkout path. I'm on it, SHOP-142.</div>
+            <div class="dd-m__t">I'll post here when it's on dev.</div>
+          </Message>
+        </Chat>
+        <div class="dd-peek" style="transform:rotate(var(--tilt-4));right:-36px;bottom:-104px">
+          <Mascot size={150} isLabelled />
+        </div>
+        <Scribble class="dd-hero__note">
+          hi. I built this page.
+          <svg slot="arrow" viewBox="0 0 80 56" width="64" height="44" aria-hidden="true">
+            <path d="M4 30 C 24 20, 44 38, 74 26"></path><path d="M74 26 L61 18 M74 26 L62 37"></path>
+          </svg>
+        </Scribble>
+      </div>
+    </div>
+  </header>
+</div>
+
+<style>
+  .dd-hero {
+    padding: var(--space-7) 0 var(--space-10);
+  }
+
+  .dd-hero__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: var(--space-9);
+    align-items: center;
+  }
+
+  .dd-hero h1 {
+    margin-bottom: var(--space-5);
+  }
+
+  .dd-hero__sub {
+    max-width: 500px;
+    color: var(--ink-muted);
+  }
+
+  .dd-hero__cta {
+    display: flex;
+    gap: var(--space-5);
+    align-items: center;
+    margin-top: var(--space-7);
+    flex-wrap: wrap;
+  }
+
+  .dd-mark {
+    position: relative;
+    display: inline-block;
+    z-index: 0;
+  }
+
+  .dd-mark::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 12px;
+    right: -8px;
+    top: 0.34em;
+    bottom: -0.12em;
+    background: var(--misha);
+  }
+
+  .dd-yellow .dd-mark::before {
+    background: var(--surface-200);
+  }
+
+  /* The note points to the face; hide both at the same phone breakpoint. */
+  .dd-hero :global(.dd-hero__note) {
+    position: absolute;
+    right: 112px;
+    bottom: -96px;
+  }
+
+  @media (max-width: 760px) {
+    .dd-hero {
+      padding-bottom: var(--space-7);
+    }
+
+    .dd-hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .dd-hero :global(.dd-hero__note) {
+      display: none;
+    }
+
+    /* The buttons are their own components, so the scoped rule has to reach into them. */
+    .dd-hero__cta :global(.dd-btn--lg) {
+      padding: 18px 24px;
+    }
+  }
+</style>

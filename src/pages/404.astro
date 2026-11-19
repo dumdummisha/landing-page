@@ -1,0 +1,12 @@
+---
+import Button from '../components/actions/Button.astro'
+import Result from '../components/shell/Result.astro'
+import Canvas from '../layouts/Canvas.astro'
+---
+
+<Canvas title="Not found">
+  <Result mood="question" size={112} title="There's nothing here.">
+    This page doesn't exist.
+    <Button slot="actions" href="/" size="sm">Back to the page</Button>
+  </Result>
+</Canvas>

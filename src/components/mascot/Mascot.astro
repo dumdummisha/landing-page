@@ -1,0 +1,87 @@
+---
+// Misha's face from the design system's Mascot group. Unless it is labelled it is decorative; a labelled face
+// says Misha and the variant's mood.
+interface Props {
+  variant?: 'default' | 'done' | 'eyes' | 'question'
+  size: number
+  isLabelled?: boolean
+}
+
+const NAMES = {
+  default: 'Misha',
+  done: 'Misha, done',
+  eyes: 'Misha, on it',
+  question: 'Misha, with a question',
+} as const
+
+const { variant = 'default', size, isLabelled = false } = Astro.props
+const label = isLabelled ? NAMES[variant] : undefined
+const line = { fill: 'none', stroke: '#1f1b16', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' } as const
+---
+
+<svg
+  viewBox="0 0 64 64"
+  width={size}
+  height={size}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+>
+  <g transform="rotate(-5 32 32)">
+    <rect x="7" y="9" width="50" height="46" rx="19" fill="#ffcf4a" stroke="#1f1b16" stroke-width="3"></rect>
+    {
+      variant === 'default' && (
+        <>
+          <circle cx="24" cy="30" r="9.5" fill="#ffffff" stroke="#1f1b16" stroke-width="2.5" />
+          <circle cx="22.2" cy="33" r="4" fill="#1f1b16" />
+          <circle cx="45" cy="31" r="6.5" fill="#ffffff" stroke="#1f1b16" stroke-width="2.5" />
+          <circle cx="46.6" cy="29.2" r="2.8" fill="#1f1b16" />
+          <rect x="30" y="47" width="5.2" height="5.4" rx="1.2" fill="#ffffff" stroke="#1f1b16" stroke-width="2" />
+          <path d="M22 44.5 Q32 51.5 42.5 43.5" {...line} />
+        </>
+      )
+    }
+    {
+      variant === 'question' && (
+        <>
+          <circle cx="24" cy="30" r="9.5" fill="#ffffff" stroke="#1f1b16" stroke-width="2.5" />
+          <circle cx="22.2" cy="33" r="4" fill="#1f1b16" />
+          <circle cx="45" cy="31" r="6.5" fill="#ffffff" stroke="#1f1b16" stroke-width="2.5" />
+          <circle cx="46.6" cy="29.2" r="2.8" fill="#1f1b16" />
+          <path d="M16 17 Q23 11.5 31 15.5" {...line} stroke-width="2.6" />
+          <path d="M40 21.5 L50.5 20.5" {...line} stroke-width="2.6" />
+          <ellipse cx="33" cy="47.5" rx="3.3" ry="3.9" fill="#1f1b16" />
+        </>
+      )
+    }
+    {
+      variant === 'eyes' && (
+        <>
+          <circle cx="24" cy="30" r="9.5" fill="#ffffff" stroke="#1f1b16" stroke-width="2.5" />
+          <circle cx="28.6" cy="31" r="4" fill="#1f1b16" />
+          <circle cx="45" cy="31" r="6.5" fill="#ffffff" stroke="#1f1b16" stroke-width="2.5" />
+          <circle cx="48.6" cy="31.5" r="2.8" fill="#1f1b16" />
+          <path d="M27 46 H38" {...line} />
+        </>
+      )
+    }
+    {
+      variant === 'done' && (
+        <>
+          <path d="M15.5 31 Q24 21.5 32.5 31" {...line} />
+          <path d="M38.5 31.5 Q45 25 51.5 31.5" {...line} />
+          <rect x="30" y="47" width="5.2" height="5.4" rx="1.2" fill="#ffffff" stroke="#1f1b16" stroke-width="2" />
+          <path d="M20 42 Q32 54 45 41" {...line} />
+        </>
+      )
+    }
+  </g>
+  {
+    variant === 'done' && (
+      <>
+        <circle cx="51" cy="51" r="9" fill="#0b6a77" stroke="#1f1b16" stroke-width="2.5" />
+        <path d="M46.5 51 l3.2 3.2 l6 -6.4" {...line} stroke="#ffffff" stroke-width="2.8" />
+      </>
+    )
+  }
+</svg>

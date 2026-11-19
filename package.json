@@ -1,0 +1,21 @@
+{
+  "name": "dumdum-misha",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/tokens.ts && node scripts/fonts.ts && astro dev",
+    "build": "node scripts/tokens.ts && node scripts/fonts.ts && astro build",
+    "check": "node scripts/tokens.ts && node scripts/fonts.ts && astro check",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "fonts": "node scripts/fonts.ts --write"
+  },
+  "dependencies": {
+    "astro": "7.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "oxfmt": "0.74.0",
+    "typescript": "6.0.3"
+  }
+}

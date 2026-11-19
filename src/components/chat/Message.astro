@@ -1,0 +1,72 @@
+---
+interface Props {
+  initials: string
+  name: string
+  time: string
+  isColleague?: boolean
+  isInThread?: boolean
+}
+
+const { initials, name, time, isColleague = false, isInThread = false } = Astro.props
+---
+
+<div class:list={['dd-m', { 'dd-m--thread': isInThread }]}>
+  <div class:list={['dd-m__av', { 'dd-m__av--b': isColleague }]}>{initials}</div>
+  <div>
+    <div class="dd-m__h">{name}<time>{time}</time></div>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .dd-m {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    padding: 10px 20px;
+  }
+
+  .dd-m--thread {
+    padding-left: 54px;
+  }
+
+  .dd-m__av {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    font: 700 13px/1 var(--font-sans);
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+
+  .dd-m__av--b {
+    background: var(--misha);
+    color: var(--on-misha);
+  }
+
+  .dd-m__h {
+    font: 700 15px/20px var(--font-sans);
+  }
+
+  .dd-m__h time {
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-left: 8px;
+  }
+
+  .dd-m :global(.dd-m__t) {
+    font: 400 15px/24px var(--font-sans);
+  }
+
+  .dd-m :global(.dd-m__t b) {
+    font-weight: 700;
+  }
+
+  .dd-m :global(.dd-m__meta) {
+    font: 600 12px/16px var(--font-sans);
+    color: var(--link);
+    margin-top: 8px;
+  }
+</style>

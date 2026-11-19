@@ -1,0 +1,333 @@
+---
+// A landing section told as a scroll journey, with no script. The story slot holds, in reading order, a pinned note
+// (.dd-jy__pin), one caption per step (.dd-jy__cap) and the cards. Step k's card sits in grid row k + 1 (row 1 is
+// a .dd-jy__slot--start spacer for step 0) and is a view timeline named --ck (.dd-jy__t) whose port is the focus
+// line. --s, the step, is the last card whose top has crossed that line: one constant animation per step on its
+// card's timeline, held after its range, and the later step wins. Anything shown for steps --from to --to takes
+// .dd-jy__on. Without scroll-driven animations, or in a window too short for the pinned layout, the captions sit
+// between their cards and --s is the last step, the end of the story.
+//
+// The section tunes it from its own wrapper: --cols (the pinned column, a gap and the cards), --focus, --note (the
+// pinned note's height), --above (what the pin holds above the note), --capspace (room for its tallest caption),
+// --gap, --ground, --start and --lean, and the same on phones under 1000px, where the captions are left to screen
+// readers to give the cards the screen. The journey ends as soon as its last caption has been seen. The far and near
+// slots are decorative layers drifting at 0.5 and 1.6 times the page's speed over a dotted ground at 0.3, which
+// alone runs to the window's edges.
+interface Props {
+  last: number
+}
+
+const { last } = Astro.props
+const steps = Array.from({ length: last }, (_, i) => i + 1)
+const timelines = steps.map((step) => `--c${step}`).join(',')
+const names = steps.map((step) => `dd-jy-s${step}`).join(',')
+// --c0, the start spacer's, is in scope for a section that animates something before step 1.
+const scope = `--c0,${timelines}`
+---
+
+<div class="dd-jy" style={`timeline-scope:${scope}`}>
+  <div class="dd-jy__ground" aria-hidden="true">
+    <div class="dd-jy__dots"></div>
+  </div>
+  <div class="dd-jy__sky" aria-hidden="true">
+    <div class="dd-jy__far"><slot name="far" /></div>
+    <div class="dd-jy__near"><slot name="near" /></div>
+  </div>
+  <div class="dd-jy__in" style={`--last:${last};--rows:${last + 1};--names:${names};--timelines:${timelines}`}>
+    <slot />
+  </div>
+</div>
+
+<style>
+  @property --s {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 0;
+  }
+
+  .dd-jy {
+    position: relative;
+  }
+
+  .dd-jy :global(.dd-jy__on) {
+    opacity: clamp(0, min(var(--s) - var(--from) + 1, var(--to) - var(--s) + 1), 1);
+  }
+
+  .dd-jy :global(.dd-jy__stack) {
+    display: inline-grid;
+  }
+
+  .dd-jy :global(.dd-jy__stack > *) {
+    grid-area: 1 / 1;
+  }
+
+  /* In flow: one column, each caption above its card, the end state. */
+
+  .dd-jy__in {
+    --s: var(--last);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap, var(--space-4));
+    max-width: 600px;
+  }
+
+  .dd-jy :global(.dd-jy__cap) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  .dd-jy :global(.dd-jy__card) {
+    position: relative;
+  }
+
+  .dd-jy__ground,
+  .dd-jy__sky,
+  .dd-jy :global(.dd-jy__slot--start) {
+    display: none;
+  }
+
+  @supports (animation-timeline: view()) and (timeline-scope: --a) {
+    @media (min-height: 640px) {
+      .dd-jy {
+        view-timeline: --jy block;
+      }
+
+      .dd-jy :global(.dd-jy__t) {
+        view-timeline-inset: var(--focus) calc(100% - var(--focus));
+      }
+
+      /* Animations here are longhands only: the build's CSS minifier folds an animation-timeline into the animation
+         shorthand, which browsers then drop. */
+      .dd-jy__in {
+        --s: 0;
+        display: grid;
+        grid-template-columns: var(--cols);
+        grid-template-rows: repeat(var(--rows), auto);
+        gap: var(--gap, var(--space-4)) 0;
+        max-width: none;
+        animation-name: var(--names);
+        animation-fill-mode: forwards;
+        animation-timeline: var(--timelines);
+        animation-range: cover 0% cover 100%;
+      }
+
+      .dd-jy :global(.dd-jy__slot) {
+        grid-column: 3;
+        grid-row: var(--row);
+      }
+
+      .dd-jy :global(.dd-jy__slot--start) {
+        display: block;
+        height: var(--start);
+      }
+
+      /* Long enough for the last caption to settle under the note before both leave. */
+      .dd-jy :global(.dd-jy__slot--end) {
+        min-height: calc(var(--note) / 2 + 40px + var(--capspace) + 5svh);
+      }
+
+      /* The pinned column: the note centred on the focus line, the current step's caption under it. */
+      .dd-jy :global(.dd-jy__pin),
+      .dd-jy :global(.dd-jy__cap) {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        align-self: start;
+        position: sticky;
+        z-index: 2;
+      }
+
+      /* Pins stop at the journey's end, so the note keeps the caption's room below it and leaves above it. */
+      .dd-jy :global(.dd-jy__pin) {
+        top: calc(var(--focus) - var(--above, 0px) - var(--note) / 2);
+        margin-bottom: calc(40px + var(--capspace));
+      }
+
+      .dd-jy :global(.dd-jy__cap) {
+        margin-top: calc(var(--above, 0px) + var(--note) + 40px);
+        top: calc(var(--focus) + var(--note) / 2 + 40px);
+        opacity: clamp(0, min(var(--s) - var(--from) + 1, var(--to) - var(--s) + 1), 1);
+      }
+
+      /* The dotted ground runs to the window's edges; the far and near layers stay in the content column. */
+      .dd-jy__ground,
+      .dd-jy__sky {
+        display: block;
+        position: absolute;
+        inset: 0;
+        overflow: clip;
+        pointer-events: none;
+      }
+
+      .dd-jy__ground {
+        inset: 0 calc(50% - 50vw);
+      }
+
+      .dd-jy__far,
+      .dd-jy__near,
+      .dd-jy__dots {
+        position: absolute;
+        inset: 0;
+      }
+
+      .dd-jy__far > :global(*),
+      .dd-jy__near > :global(*) {
+        position: absolute;
+      }
+
+      /* The pattern overscans its layer, so the layer's own height, which its drift is measured in, stays the
+         journey's. */
+      .dd-jy__dots::before {
+        content: '';
+        position: absolute;
+        inset: -40% 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Crect width='3' height='3' fill='%23ffcf4a' fill-opacity='.5'/%3E%3C/svg%3E");
+        background-size: 32px 32px;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .dd-jy__far,
+        .dd-jy__near,
+        .dd-jy__dots,
+        .dd-jy :global(.dd-jy__card) {
+          animation-timing-function: linear;
+          animation-fill-mode: both;
+          animation-timeline: --jy;
+        }
+
+        .dd-jy__far {
+          animation-name: dd-jy-far;
+        }
+
+        .dd-jy__near {
+          animation-name: dd-jy-near;
+        }
+
+        .dd-jy__dots {
+          animation-name: dd-jy-dots;
+        }
+
+        /* A card leans towards the note while it is on the focus line, and sits back a little otherwise. */
+        .dd-jy :global(.dd-jy__card) {
+          scale: 0.97;
+          transform-origin: left center;
+          animation-name: dd-jy-lean;
+          animation-fill-mode: none;
+          animation-timeline: view(block 30% 50%);
+        }
+      }
+
+      /* Phones and narrow windows: the note pins to the top on the section's ground, the first card starts just
+         under it, the captions are left to screen readers, and the paper goes, leaving the dotted ground. */
+      @media (max-width: 999px) {
+        .dd-jy__in {
+          grid-template-columns: minmax(0, 600px);
+          justify-content: center;
+        }
+
+        .dd-jy :global(.dd-jy__slot) {
+          grid-column: 1;
+        }
+
+        .dd-jy :global(.dd-jy__slot--start) {
+          height: calc(var(--focus) - var(--gap, var(--space-4)) + var(--space-4));
+        }
+
+        .dd-jy :global(.dd-jy__slot--end) {
+          min-height: var(--space-9);
+        }
+
+        .dd-jy :global(.dd-jy__pin) {
+          top: 0;
+          margin: 0 calc(-1 * var(--space-4));
+          padding: var(--space-2) var(--space-4) var(--space-3);
+          background: var(--ground);
+          z-index: 4;
+        }
+
+        .dd-jy :global(.dd-jy__cap) {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          margin: 0;
+          overflow: hidden;
+          clip: rect(0 0 0 0);
+          white-space: nowrap;
+        }
+
+        .dd-jy__far,
+        .dd-jy__near {
+          display: none;
+        }
+
+        .dd-jy :global(.dd-jy__card) {
+          transform-origin: center top;
+        }
+      }
+
+      @media (max-width: 999px) and (prefers-reduced-motion: no-preference) {
+        .dd-jy :global(.dd-jy__card) {
+          animation-timeline: view(block 15% 60%);
+        }
+      }
+    }
+  }
+
+  @keyframes dd-jy-lean {
+    0%,
+    100% {
+      translate: 0;
+      scale: 0.97;
+    }
+
+    25%,
+    75% {
+      translate: var(--lean) 0;
+      scale: 1;
+    }
+  }
+
+  @keyframes dd-jy-far {
+    from {
+      transform: translateY(calc(-25% - 25svh));
+    }
+
+    to {
+      transform: translateY(calc(25% + 25svh));
+    }
+  }
+
+  @keyframes dd-jy-dots {
+    from {
+      transform: translateY(calc(-35% - 35svh));
+    }
+
+    to {
+      transform: translateY(calc(35% + 35svh));
+    }
+  }
+
+  @keyframes dd-jy-near {
+    from {
+      transform: translateY(calc(30% + 30svh));
+    }
+
+    to {
+      transform: translateY(calc(-30% - 30svh));
+    }
+  }
+
+  @keyframes dd-jy-s1 { from, to { --s: 1; } }
+  @keyframes dd-jy-s2 { from, to { --s: 2; } }
+  @keyframes dd-jy-s3 { from, to { --s: 3; } }
+  @keyframes dd-jy-s4 { from, to { --s: 4; } }
+  @keyframes dd-jy-s5 { from, to { --s: 5; } }
+  @keyframes dd-jy-s6 { from, to { --s: 6; } }
+  @keyframes dd-jy-s7 { from, to { --s: 7; } }
+  @keyframes dd-jy-s8 { from, to { --s: 8; } }
+  @keyframes dd-jy-s9 { from, to { --s: 9; } }
+  @keyframes dd-jy-s10 { from, to { --s: 10; } }
+  @keyframes dd-jy-s11 { from, to { --s: 11; } }
+</style>

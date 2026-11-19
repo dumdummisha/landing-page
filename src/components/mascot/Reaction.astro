@@ -1,0 +1,53 @@
+---
+// The design system's two reaction emoji, drawn to read at 20px: the mascot's eyes for "I'm on it"
+// and the cactus for a repeat attempt after a no.
+interface Props {
+  name: 'looking' | 'cactus'
+  size: number
+}
+
+const { name, size } = Astro.props
+const LABELS = { looking: 'Misha, looking', cactus: 'Misha cactus' }
+const arm = { fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' } as const
+---
+
+<svg class="dd-reaction" viewBox="0 0 64 64" width={size} height={size} role="img" aria-label={LABELS[name]}>
+  <g transform="rotate(-5 32 32)">
+    {
+      name === 'looking' && (
+        <>
+          <circle cx="19.5" cy="33.5" r="14.5" fill="#ffffff" stroke="#1f1b16" stroke-width="3" />
+          <circle cx="24.6" cy="35.1" r="6.2" fill="#1f1b16" />
+          <circle cx="49" cy="26.5" r="10" fill="#ffffff" stroke="#1f1b16" stroke-width="3" />
+          <circle cx="52.4" cy="27.3" r="4.3" fill="#1f1b16" />
+        </>
+      )
+    }
+    {
+      name === 'cactus' && (
+        <>
+          <g {...arm} stroke="#1f1b16">
+            <path d="M32 16 V50" stroke-width="22" />
+            <path d="M32 41 H11 V28" stroke-width="13" />
+            <path d="M32 34 H53 V21" stroke-width="13" />
+          </g>
+          <g {...arm} stroke="#2f7d4f">
+            <path d="M32 16 V50" stroke-width="16" />
+            <path d="M32 41 H11 V28" stroke-width="7" />
+            <path d="M32 34 H53 V21" stroke-width="7" />
+          </g>
+          <path d="M32 22 V43" fill="none" stroke="#1f1b16" stroke-width="2" stroke-linecap="round" />
+          <circle cx="34.5" cy="8.5" r="4.6" fill="#ffcf4a" stroke="#1f1b16" stroke-width="2.5" />
+          <path d="M15.5 51 H48.5 L45.5 61.5 H18.5 Z" fill="#ffcf4a" stroke="#1f1b16" stroke-width="3" stroke-linejoin="round" />
+          <rect x="14" y="47.5" width="36" height="7" rx="2" fill="#ffcf4a" stroke="#1f1b16" stroke-width="3" stroke-linejoin="round" />
+        </>
+      )
+    }
+  </g>
+</svg>
+
+<style>
+  .dd-reaction {
+    vertical-align: -0.2em;
+  }
+</style>
