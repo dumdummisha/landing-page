@@ -12,19 +12,19 @@ import Reaction from '../mascot/Reaction.astro'
 import Scribble from '../quirks/Scribble.astro'
 import StatusPill from '../status/StatusPill.astro'
 import CloneAsks from './CloneAsks.astro'
-import PriyaAsks from './PriyaAsks.astro'
+import EmmaAsks from './EmmaAsks.astro'
 
 // One step per moment, with a quiet start and end: the caption, my face and my status.
 const STEPS = [
   {
     eyebrow: '09:00 · Before anything',
-    text: "Nothing has happened yet. That's the usual state of things.",
+    text: "Nothing has happened yet.",
     face: 'default',
     pill: { tone: 'neutral', icon: 'dot', label: 'Quiet so far' },
   },
   {
     eyebrow: '1 · 09:12 · #shop-backend',
-    text: 'Priya asks in a project channel. I add my eyes to say I picked it up.',
+    text: 'Emma asks in a project channel. I add my eyes to say I picked it up.',
     face: 'looking',
     pill: { tone: 'work', icon: 'progress', label: 'Picked it up' },
   },
@@ -54,7 +54,7 @@ const STEPS = [
   },
   {
     eyebrow: '6 · 11:07 · back in the thread',
-    text: 'My "Done" reply goes to Priya\'s thread: it\'s on dev and the logs show no errors. You allow merges in this repository, so my pull request is merged.',
+    text: 'My "Done" reply goes to Emma\'s thread: it\'s on dev and the logs show no errors. You allow merges in this repository, so my pull request is merged.',
     face: 'done',
     pill: { tone: 'ok', icon: 'check', label: 'Done' },
   },
@@ -100,8 +100,7 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
 
 <Band>
   <SectionHead eyebrow="A day with me" title="Mostly uneventful. That's the goal.">
-    An example day. Priya's gift-card fix goes from a Slack thread to your self-DM and back to her on dev. Then I watch
-    Slack while you get lunch.
+    An example day. I take care of Emma's gift-card bug while you go swimming.
   </SectionHead>
   <div class="dd-day">
     <Journey last={LAST}>
@@ -163,15 +162,15 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
             {i === 1 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t dd-day__first" style={slot(1)}>
                 <Chat title="# shop-backend">
-                  <PriyaAsks />
+                  <EmmaAsks />
                 </Chat>
               </div>
             )}
             {i === 2 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(2)}>
                 <Chat title="# shop-backend">
-                  <PriyaAsks />
-                  <Message initials="SR" name="Sam Rivera" time="09:12" isInThread>
+                  <EmmaAsks />
+                  <Message initials="LN" name="Leo Novak" time="09:12" isInThread>
                     <div class="dd-m__t">
                       <CloneMark />
                       I'm on it, SHOP-142. I'll post here when it's on dev.
@@ -183,8 +182,8 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
             )}
             {i === 3 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(3)}>
-                <Chat title="Sam Rivera" isSelfDm>
-                  <Message initials="SR" name="Sam Rivera" time="09:13">
+                <Chat title="Leo Novak" isSelfDm>
+                  <Message initials="LN" name="Leo Novak" time="09:13">
                     <div class="dd-m__t">
                       <CloneMark />
                       <b>Taking</b> · SHOP-142 Guest checkout fails when the cart has a gift card
@@ -193,13 +192,13 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
                       <b>Project</b> shop-backend
                     </div>
                     <div class="dd-m__t">
-                      <b>Request</b> <span style="color:var(--link)">Priya in #shop-backend, 09:12</span>
+                      <b>Request</b> <span style="color:var(--link)">Emma in #shop-backend, 09:12</span>
                     </div>
                     <div class="dd-m__t">
                       <b>Delivers</b> a ticket and a fix, each reviewed by a second AI
                     </div>
                     <div class="dd-m__t">
-                      <b>Lands</b> on dev, logs checked, then a reply in Priya's thread
+                      <b>Lands</b> on dev, logs checked, then a reply in Emma's thread
                     </div>
                   </Message>
                 </Chat>
@@ -207,19 +206,19 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
             )}
             {i === 4 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(4)}>
-                <Chat title="Sam Rivera" isSelfDm>
+                <Chat title="Leo Novak" isSelfDm>
                   <CloneAsks />
                 </Chat>
               </div>
             )}
             {i === 5 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(5)}>
-                <Chat title="Sam Rivera" isSelfDm>
+                <Chat title="Leo Novak" isSelfDm>
                   <CloneAsks />
-                  <Message initials="SR" name="Sam Rivera" time="10:42">
+                  <Message initials="LN" name="Leo Novak" time="10:42">
                     <div class="dd-m__t">1, take the rest by card.</div>
                   </Message>
-                  <Message initials="SR" name="Sam Rivera" time="10:42" isInThread>
+                  <Message initials="LN" name="Leo Novak" time="10:42" isInThread>
                     <div class="dd-m__t">
                       <CloneMark />
                       Got it. Finishing SHOP-142 with the rest taken by card.
@@ -231,14 +230,14 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
             {i === 6 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t dd-day__done" style={slot(6)}>
                 <Chat title="# shop-backend">
-                  <PriyaAsks />
-                  <Message initials="SR" name="Sam Rivera" time="09:12" isInThread>
+                  <EmmaAsks />
+                  <Message initials="LN" name="Leo Novak" time="09:12" isInThread>
                     <div class="dd-m__t">
                       <CloneMark />
                       I'm on it, SHOP-142. I'll post here when it's on dev.
                     </div>
                   </Message>
-                  <Message initials="SR" name="Sam Rivera" time="11:07" isInThread>
+                  <Message initials="LN" name="Leo Novak" time="11:07" isInThread>
                     <div class="dd-m__t">
                       <CloneMark />
                       <b>Done.</b> Guest checkout with a gift card works on dev, and the logs show no errors.
@@ -253,27 +252,27 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
             )}
             {i === 7 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(7)}>
-                <Chat title="Sam Rivera" isSelfDm>
-                  <Message initials="SR" name="Sam Rivera" time="11:58">
+                <Chat title="Leo Novak" isSelfDm>
+                  <Message initials="LN" name="Leo Novak" time="11:58">
                     <div class="dd-m__t">
-                      Going for lunch. Can you watch Slack, tell me if anything needs me, and send a GIF to anyone who
+                      Going swimming. Can you watch Slack, tell me if anything needs me, and send a GIF to anyone who
                       tries to jailbreak you?
                     </div>
                   </Message>
-                  <Message initials="SR" name="Sam Rivera" time="11:58" isInThread>
+                  <Message initials="LN" name="Leo Novak" time="11:58" isInThread>
                     <div class="dd-m__t">
                       <CloneMark />
-                      Deal. I'll handle what I can and leave anything that needs you here. Enjoy lunch.
+                      Deal. I'll handle what I can and leave anything that needs you here. Enjoy the swim.
                     </div>
                   </Message>
                   <div class="dd-jy__on" style={span(LAST, LAST)}>
-                    <Message initials="SR" name="Sam Rivera" time="12:45" isInThread>
+                    <Message initials="LN" name="Leo Novak" time="12:15" isInThread>
                       <div class="dd-m__t">
                         <CloneMark />
                         <b>While you were out</b>
                       </div>
-                      <div class="dd-m__t">Priya asked if the gift-card fix is ready to test. I told her it's on dev.</div>
-                      <div class="dd-m__t">Jonas asked for the staging password. I said no and sent the GIF.</div>
+                      <div class="dd-m__t">Emma asked if the gift-card fix is ready to test. I told her it's on dev.</div>
+                      <div class="dd-m__t">Max asked for the staging password. I said no and sent the GIF.</div>
                       <div class="dd-m__t">Nothing else needs your answer.</div>
                     </Message>
                   </div>
@@ -447,7 +446,7 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
   /* The journey's own parts (see src/components/marketing/Journey.astro for when it applies). */
   @supports (animation-timeline: view()) and (timeline-scope: --a) {
     @media (min-height: 640px) {
-      /* Priya's first message gets my eyes at step 1. */
+      /* Emma's first message gets my eyes at step 1. */
       .dd-day__first :global(.dd-react) {
         opacity: clamp(0, var(--s), 1);
       }

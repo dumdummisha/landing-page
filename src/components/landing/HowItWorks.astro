@@ -11,19 +11,18 @@ import Message from '../chat/Message.astro'
 import Journey from '../marketing/Journey.astro'
 import Mascot from '../mascot/Mascot.astro'
 import StatusPill from '../status/StatusPill.astro'
-import PriyaAsks from './PriyaAsks.astro'
+import EmmaAsks from './EmmaAsks.astro'
 
 // One caption per step: 0 is the intro, 1 to 10 the journey, 11 the end.
 const CAPTIONS = [
   {
     eyebrow: 'One request, start to finish',
     title: 'I stay put. The work comes to me.',
-    text: "Follow one request from a Slack thread to a merged pull request, in a repository where you allow merges. I'm the yellow note.",
   },
   {
     eyebrow: '1 of 10 · Slack asks',
     title: 'It starts in a Slack thread.',
-    text: 'Priya asks in a project channel. I add my eyes to say I picked it up.',
+    text: 'Emma asks in a project channel. I add my eyes to say I picked it up.',
   },
   {
     eyebrow: '2 of 10 · A question',
@@ -57,8 +56,8 @@ const CAPTIONS = [
   },
   {
     eyebrow: '8 of 10 · Worker: Deploy',
-    title: 'Dev is as far as I go.',
-    text: 'You allow merges in this repository, so I merge my pull request and deploy to dev. Staging and production stay yours.',
+    title: 'I ship it.',
+    text: 'You allow merges in this repository, so I merge my pull request and deploy it.',
   },
   {
     eyebrow: '9 of 10 · Worker: Logs',
@@ -106,14 +105,14 @@ const HELPERS = [
   { title: 'Ticket', note: 'drafted from the thread, linked back', result: 'SHOP-142 drafted', nudge: 16 },
   { title: 'Code', note: 'implemented on a branch, pull request', result: 'pull request #88', nudge: 0 },
   { title: 'Review', note: 'ticket and code, each by a second AI', result: 'both reviewed', nudge: 20 },
-  { title: 'Deploy', note: 'my pull request, dev only', result: 'on dev', nudge: 6 },
+  { title: 'Deploy', note: 'my pull request, merged and deployed', result: 'on dev', nudge: 6 },
   { title: 'Logs', note: 'checked after every deploy', result: 'no errors', nudge: 14 },
 ]
 
 // One hand-drawn arrow between the clone's edge (x 6) and the active card's edge (x 114), across the focus line at
 // y 60, reshaped at every step: towards the card from the clone, or back to it from the card, ending a head's length
 // short. Every shape is a start and four absolute curves, so CSS can morph each into the next; step 1 uncurls it
-// from a curl at Priya's card. Dotted is a question or its answer; the work wiggles a little differently
+// from a curl at Emma's card. Dotted is a question or its answer; the work wiggles a little differently
 // every time.
 const CURL = 'M106 54 C100 46 92 50 94 58 C96 66 106 64 104 56 C102 48 90 50 90 60 C90 68 98 70 100 64'
 const ARROWS = [
@@ -184,8 +183,9 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
 
 <Band tone="tint" id="how">
   <SectionHead eyebrow="How it works" title="I listen. My workers do the work.">
-    Slack sends me requests. Workers, separate AI sessions on your computer, take each one through ticket, code,
-    reviews by a second AI, a deploy to dev and the logs. Anything that needs a decision comes back to you.
+    Slack sends me requests, and I hand them to workers that run in parallel in the background. Each takes one ticket:
+    it writes the code, a second AI reviews the change, then it deploys and checks the logs. Workers can also test the
+    finished feature end to end with cURL. Anything that needs a decision comes back to you.
   </SectionHead>
   <div class="dd-jr">
     <Journey last={LAST}>
@@ -266,14 +266,14 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
             {i === 1 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t dd-jr__slack" style={`--row:2;${timeline(1)}`}>
                 <Chat title="# shop-backend">
-                  <PriyaAsks />
+                  <EmmaAsks />
                 </Chat>
               </div>
             )}
             {i === 2 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t" style={`--row:3;${timeline(2)}`}>
-                <Chat title="Sam Rivera" isSelfDm>
-                  <Message initials="SR" name="Sam Rivera" time="10:31">
+                <Chat title="Leo Novak" isSelfDm>
+                  <Message initials="LN" name="Leo Novak" time="10:31">
                     <div class="dd-m__t">
                       <CloneMark />
                       <b>Question</b> · SHOP-142 When a gift card covers only part of the cart, should the guest pay
@@ -293,7 +293,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
                     <StatusPill tone="wait" icon="clock" label="Waiting for your answer" />
                   </span>
                   <div class="dd-jy__on" style={span(3, LAST)}>
-                    <Message initials="SR" name="Sam Rivera" time="10:42">
+                    <Message initials="LN" name="Leo Novak" time="10:42">
                       <div class="dd-m__t">1, take the rest by card.</div>
                     </Message>
                   </div>
@@ -331,7 +331,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
             {i === 10 && (
               <div class="dd-jy__slot dd-jy__card dd-jy__t" style={`--row:11;${timeline(10)}`}>
                 <Chat title="# shop-backend">
-                  <Message initials="SR" name="Sam Rivera" time="11:07">
+                  <Message initials="LN" name="Leo Novak" time="11:07">
                     <div class="dd-m__t">
                       <CloneMark />
                       <b>Done.</b> Guest checkout with a gift card works on dev, and the logs show no errors.
@@ -459,7 +459,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
         margin-top: calc(-1 * var(--space-4));
       }
 
-      /* Priya's message gets my eyes at step 1. */
+      /* Emma's message gets my eyes at step 1. */
       .dd-jr__slack :global(.dd-react) {
         opacity: clamp(0, var(--s), 1);
       }

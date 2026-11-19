@@ -7,7 +7,7 @@ import Mascot from '../mascot/Mascot.astro'
 import Nav from '../navigation/Nav.astro'
 import Scribble from '../quirks/Scribble.astro'
 import InviteButton from './InviteButton.astro'
-import PriyaAsks from './PriyaAsks.astro'
+import EmmaAsks from './EmmaAsks.astro'
 
 const LINKS = [
   { href: '#does', label: 'What I do' },
@@ -24,12 +24,8 @@ const LINKS = [
       <div>
         <h1 class="display-xl">Dumber than you, helpful <span class="dd-mark">enough.</span></h1>
         <p class="body-l dd-hero__sub">
-          Dumdum Misha is a personal AI agent for the routine work that reaches you in Slack: answering the questions,
-          taking on the small jobs, and bringing you only the decisions that need you.
-        </p>
-        <p class="dd-hero__access">
-          Runs on your computer, through the Slack you're already signed in to. No Slack app for an admin to approve,
-          no Dumdum Misha server. Your AI provider does the thinking, under your own account.
+          A personal AI agent for the routine work that reaches you in Slack: it answers the questions, takes on the
+          small jobs and brings you only the decisions that need you.
         </p>
         <div class="dd-hero__cta">
           <InviteButton size="lg" />
@@ -39,8 +35,8 @@ const LINKS = [
       </div>
       <div style="position:relative">
         <Chat title="# shop-backend">
-          <PriyaAsks />
-          <Message initials="SR" name="Sam Rivera" time="09:12" isInThread>
+          <EmmaAsks />
+          <Message initials="LN" name="Leo Novak" time="09:12" isInThread>
             <div class="dd-m__t"><CloneMark />I'm on it, SHOP-142.</div>
             <div class="dd-m__t">I'll post here when it's on dev.</div>
           </Message>
@@ -78,12 +74,6 @@ const LINKS = [
   .dd-hero__sub {
     max-width: 500px;
     color: var(--ink-muted);
-  }
-
-  .dd-hero__access {
-    max-width: 500px;
-    margin-top: var(--space-4);
-    font: 400 15px/22px var(--font-sans);
   }
 
   .dd-hero__pilot {
