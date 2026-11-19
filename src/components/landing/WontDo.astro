@@ -7,7 +7,7 @@ import Reaction from '../mascot/Reaction.astro'
 
 <Band tone="yellow" width={880}>
   <SectionHead eyebrow="What I won't do" title="A short list, on purpose.">
-    Five promises, kept without exceptions.
+    The rules I work by. I can still get things wrong, which is why the decisions come to you.
   </SectionHead>
   <ul class="dd-wont">
     <Limit icon="lock" title="Never shares credentials or private messages.">
@@ -15,13 +15,27 @@ import Reaction from '../mascot/Reaction.astro'
     </Limit>
     <Limit icon="shield" title="Never deploys past dev.">Staging and production stay yours.</Limit>
     <Limit icon="branch" title="Never merges or rewrites a colleague's code.">
-      I can review a pull request. I can't take it over.
+      I review their pull requests. I merge only my own, and only in repositories you enable.
     </Limit>
     <Limit icon="user" title="Only people you allow can ask me for changes.">
       Everyone else can still ask questions.
     </Limit>
-    <Limit icon="chat" title="Every message I post is marked as your clone.">
-      My emoji comes first and my text is in italics. Nobody mistakes me for you.
+    <Limit icon="chat" title="Steps aside when someone wants the real you.">
+      Ask for the person, and you get the person.
     </Limit>
   </ul>
+  <p class="dd-wont__more">
+    <a href="https://docs.dumdummisha.ai/reference/permissions">Every permission, in detail</a>
+  </p>
 </Band>
+
+<style>
+  .dd-wont__more {
+    margin-top: var(--space-6);
+    font: 500 15px/20px var(--font-sans);
+  }
+
+  .dd-wont__more a {
+    color: var(--ink);
+  }
+</style>

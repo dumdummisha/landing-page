@@ -2,26 +2,19 @@
 import Band from '../band/Band.astro'
 import SectionHead from '../band/SectionHead.astro'
 import CheckList from '../marketing/CheckList.astro'
-import Scribble from '../quirks/Scribble.astro'
 ---
 
 <Band id="teams">
   <SectionHead eyebrow="For developers and for teams" title="One product, two ways to feel it." />
   <div class="dd-grid2 dd-columns">
-    <Scribble class="dd-anyone">
-      (Not a nerd? You can use me too.)
-      <svg slot="arrow" viewBox="0 0 80 56" width="64" height="44" aria-hidden="true">
-        <path d="M74 6 C 52 2, 30 14, 12 42"></path><path d="M12 42 L14 28 M12 42 L25 36"></path>
-      </svg>
-    </Scribble>
     <div class="dd-card" style="padding:var(--space-7)">
       <div class="dd-eyebrow">Solo, freelance or employed</div>
       <h3 class="heading-2" style="margin:8px 0 var(--space-5)">For developers</h3>
       <CheckList
         items={[
-          'Takes the distractions off you. The same work gets done without you doing more.',
+          'Takes the routine interruptions off you, so you keep your focus.',
           'Questions reach you on your phone, one thread per topic.',
-          'Runs on your Mac, in the Misha app, on your own Claude Code.',
+          'Runs on your computer, on your own AI subscription.',
           'Works in every repository you choose.',
         ]}
       />
@@ -34,8 +27,8 @@ import Scribble from '../quirks/Scribble.astro'
           'Questions in Slack get answered without pulling a developer out of their work.',
           'Every ticket links back to the conversation that asked for it.',
           'Every ticket and change gets a second AI review, from another provider if you have one.',
-          'Logs are checked after every deploy, so nobody has to watch them.',
-          'Delivery goes as far as each project allows.',
+          'Logs are checked after every deploy to dev.',
+          'Deploys stop at dev. Staging and production stay with your team.',
         ]}
       />
     </div>
@@ -44,24 +37,8 @@ import Scribble from '../quirks/Scribble.astro'
 
 <style>
   .dd-columns {
-    position: relative;
     gap: var(--space-8);
     align-items: start;
-  }
-
-  /* The note points to the developers card from the space above the lowered teams card. */
-  .dd-columns :global(.dd-anyone) {
-    position: absolute;
-    left: calc(50% - var(--space-6));
-    bottom: calc(100% - 36px);
-    max-width: 440px;
-    flex-direction: row-reverse;
-  }
-
-  @media (max-width: 900px) {
-    .dd-columns :global(.dd-anyone) {
-      display: none;
-    }
   }
 
   /* The teams card starts lower than its neighbour; stacked on a phone there is nothing to stagger. */

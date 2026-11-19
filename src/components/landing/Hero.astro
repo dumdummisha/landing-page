@@ -12,31 +12,36 @@ import PriyaAsks from './PriyaAsks.astro'
 const LINKS = [
   { href: '#does', label: 'What I do' },
   { href: '#how', label: 'How it works' },
-  { href: '#teams', label: 'For teams' },
+  { href: 'https://docs.dumdummisha.ai/start/why', label: 'Docs' },
   { href: '#faq', label: 'FAQ' },
 ]
 ---
 
 <div class="dd-yellow" style="position:relative;overflow:hidden">
-  <Nav links={LINKS}><InviteButton size="sm" /></Nav>
+  <Nav links={LINKS} isFullName><InviteButton size="sm" /></Nav>
   <header class="dd-hero">
     <div class="dd-wrap dd-hero__grid">
       <div>
         <h1 class="display-xl">Dumber than you, helpful <span class="dd-mark">enough.</span></h1>
         <p class="body-l dd-hero__sub">
-          I'm your clone for messages, built by a developer who needed one. I take the "can you check this?" so you can
-          keep working, and bring you the decisions I can't safely make.
+          I'm Dumdum Misha, a personal AI agent for the routine work that reaches you in Slack. I answer the questions,
+          take on the small jobs, and bring you the decisions that need you.
+        </p>
+        <p class="dd-hero__access">
+          I run on your computer and work through the Slack you're already signed in to. No Slack app for an admin to
+          approve, and no Dumdum Misha server. Your AI provider does the thinking, under your own account.
         </p>
         <div class="dd-hero__cta">
           <InviteButton size="lg" />
-          <Button href="#how" variant="secondary" size="lg">See how it works</Button>
+          <Button href="https://docs.dumdummisha.ai/start/why" variant="secondary" size="lg">Read the docs</Button>
         </div>
+        <p class="dd-hero__pilot">Invite-only pilot. Free for now, on your own Claude subscription.</p>
       </div>
       <div style="position:relative">
         <Chat title="# shop-backend">
           <PriyaAsks />
           <Message initials="SR" name="Sam Rivera" time="09:12" isInThread>
-            <div class="dd-m__t"><CloneMark />Gift cards skip the guest checkout path. I'm on it, SHOP-142.</div>
+            <div class="dd-m__t"><CloneMark />I'm on it, SHOP-142.</div>
             <div class="dd-m__t">I'll post here when it's on dev.</div>
           </Message>
         </Chat>
@@ -72,6 +77,18 @@ const LINKS = [
 
   .dd-hero__sub {
     max-width: 500px;
+    color: var(--ink-muted);
+  }
+
+  .dd-hero__access {
+    max-width: 500px;
+    margin-top: var(--space-4);
+    font: 400 15px/22px var(--font-sans);
+  }
+
+  .dd-hero__pilot {
+    margin-top: var(--space-4);
+    font: 400 13px/18px var(--font-mono);
     color: var(--ink-muted);
   }
 

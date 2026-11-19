@@ -3,30 +3,28 @@ import Icon from '../Icon.astro'
 import Brand from '../navigation/Brand.astro'
 import Scribble from '../quirks/Scribble.astro'
 
-// Only pages that exist get a link, so the footer has the brand and the landing page's own sections.
+// The landing page's own sections, then the docs, which hold the detail and the canonical privacy policy.
 const PRODUCT = [
   { href: '#does', label: 'What I do' },
   { href: '#how', label: 'How it works' },
   { href: '#teams', label: 'For teams' },
   { href: '#faq', label: 'FAQ' },
-  { href: '/privacy', label: 'Privacy' },
 ]
-
-// What the landing page downloads, in kilobytes of 1,000 bytes: the files headless Brave fetched for the whole page
-// from the static build, the HTML, CSS, icon and manifest compressed with brotli at quality 5, headers not counted.
-// Measure again when the fonts or the page change.
-const PAGE_KB = 112
-const FONTS_KB = 92
+const DOCS = [
+  { href: 'https://docs.dumdummisha.ai/start/why', label: 'Why try it' },
+  { href: 'https://docs.dumdummisha.ai/reference/permissions', label: 'Permissions' },
+  { href: 'https://docs.dumdummisha.ai/privacy', label: 'Privacy' },
+  { href: 'mailto:michal@dumdummisha.ai', label: 'Contact Michal' },
+]
 ---
 
 <footer class="dd-footer">
   <div class="dd-wrap dd-footer__grid">
     <div>
-      <Brand />
+      <Brand isFullName />
       <p class="dd-muted" style="margin-top:12px;max-width:260px">Dumber than you, helpful enough.</p>
       <p class="dd-muted dd-footer__weight">
-        This page is {PAGE_KB}&nbsp;KB, {FONTS_KB}&nbsp;KB of it fonts, because I wanted to look nice. No JavaScript, no cookies, no
-        trackers.
+        No JavaScript, no cookies, no trackers. Most of the weight is fonts, because I wanted to look nice.
       </p>
     </div>
     <div>
@@ -41,15 +39,27 @@ const FONTS_KB = 92
         }
       </ul>
     </div>
+    <div>
+      <h4>Docs</h4>
+      <ul>
+        {
+          DOCS.map(({ href, label }) => (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
   <div class="dd-wrap" style="margin-top:var(--space-8)">
     <Scribble tilt={1}>
-      Built by me. Not great, good enough. Talk to <a
+      Built by <a
         class="dd-credit"
         href="https://www.linkedin.com/in/michaljarnot"
         target="_blank"
-        rel="noopener noreferrer">Michal<Icon name="external" /><span class="dd-vh"> (opens in a new tab)</span></a
-      > to get the great things.
+        rel="noopener noreferrer">Michal Jarnot<Icon name="external" /><span class="dd-vh"> (opens in a new tab)</span></a
+      >, a software engineer with 10+ years building products for Silicon Valley companies. I'm the dumber one.
     </Scribble>
   </div>
 </footer>
