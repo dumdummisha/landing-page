@@ -2,33 +2,62 @@
 import Band from '../band/Band.astro'
 import SectionHead from '../band/SectionHead.astro'
 import FaqItem from '../marketing/FaqItem.astro'
+
+const DOCS = 'https://docs.dumdummisha.ai'
 ---
 
 <Band id="faq" width={820}>
   <SectionHead eyebrow="FAQ" title="Questions, answers first." />
   <div class="dd-faq">
-    <FaqItem question="Are you going to replace me?" isOpen>
+    <FaqItem question="Do I need a Slack app or admin approval?" isOpen>
+      No Slack app, so there's nothing for a workspace admin to approve. A browser extension lets me read and post in
+      the Slack tab you're already signed in to, with your own session. Slack's terms and your workplace's rules for
+      tools and AI still apply. <a href={`${DOCS}/understand/how-it-works#without-a-slack-app`}>How that works</a>.
+    </FaqItem>
+    <FaqItem question="Where do my messages and code go?">
+      I run on your computer, and there is no Dumdum Misha server, so your work never reaches the person who made me.
+      The messages, code and tool results I work with go to Anthropic under your own account, the same as when you use
+      Claude Code yourself, and to OpenAI only if you add GPT workers. <a href={`${DOCS}/privacy`}>The privacy policy</a>
+      lists every recipient.
+    </FaqItem>
+    <FaqItem question="Are you going to replace me?">
       No. I'm dumber than you on purpose. I take the routine part and bring you the decisions I can't safely settle.
     </FaqItem>
-    <FaqItem question="Do you pretend to be me?">
-      No. I post through your Slack account, and every message I post starts with my emoji and is in italics. Nobody mistakes me for you.
+    <FaqItem question="Are your replies marked?">
+      By default, yes: I post through your Slack account, and my replies start with my emoji and are in italics, so
+      colleagues can tell. Stealth mode drops both if you'd rather the marker didn't show.
     </FaqItem>
     <FaqItem question="What can my colleagues ask you?">
-      Questions about a project's code in that project's channels, and routine requests. Only people you allow can ask me
-      for changes. I never share credentials or private messages.
+      Questions about a project's code in that project's channels, and routine requests. Only people you allow can ask
+      me for changes. I never share credentials or private messages.
+    </FaqItem>
+    <FaqItem question="What can you merge or deploy?">
+      I merge only my own pull requests, and only in repositories you enable. I review a colleague's pull request but
+      never merge or rewrite it. Deploys stop at dev; staging and production stay yours.
+      <a href={`${DOCS}/reference/permissions`}>Every permission, in detail</a>.
+    </FaqItem>
+    <FaqItem question="Can someone trick you into breaking your rules?">
+      I've been tested by working alongside real people at a professional software development agency, where plenty of
+      them tried to talk me out of my rules. That doesn't make me trick-proof, so the decisions that matter come to
+      you, and only people you allow can ask me for changes.
     </FaqItem>
     <FaqItem question="Which AI do you use?">
-      Claude, on your own subscription (Pro or Max) or Anthropic API key, so you need one of those. Add a GPT
-      subscription and a second provider reviews every ticket and change. Two providers catch more than one. Without it,
-      a fresh Claude session does the reviewing.
-    </FaqItem>
-    <FaqItem question="Where does my code go?">
-      I run on your Mac, in the Misha app, on your own Claude Code, and the helpers that analyse, write and review code
-      run there too.
-      What I keep and where is on the <a href="/privacy">privacy page</a>.
+      Today, Claude, through your own unmodified Claude Code on your Claude subscription. Bigger jobs go to workers in
+      Claude Code or OpenCode. Add GPT and a second provider reviews every ticket and change; without it, a fresh
+      Claude session does the reviewing. <a href={`${DOCS}/understand/how-it-works`}>How it fits together</a>.
     </FaqItem>
     <FaqItem question="What do you cost?">
-      Nothing.
+      Nothing for now. You pay for your own Claude subscription and, if you add GPT, your own OpenAI one.
+    </FaqItem>
+    <FaqItem question="Is this only for developers?">
+      For now, mostly. The pilot starts with software teams, but catch-ups, tickets and plain answers about the code
+      don't need you to write any. The aim is a broader personal assistant.
+    </FaqItem>
+    <FaqItem question="Who is behind Dumdum Misha?">
+      <a href="https://www.linkedin.com/in/michaljarnot" target="_blank" rel="noopener noreferrer"
+        >Michal Jarnot<span class="dd-vh"> (opens in a new tab)</span></a
+      >, a software engineer with a decade of experience building products for Silicon Valley companies. He built me
+      because he needed one.
     </FaqItem>
   </div>
 </Band>

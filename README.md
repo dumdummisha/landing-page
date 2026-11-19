@@ -1,17 +1,17 @@
 # Dumdum Misha website
 
-The website at [dumdummisha.ai](https://dumdummisha.ai): the landing page for Dumdum Misha, a Slack clone of a developer that runs on the user's Mac, in the Misha app, on their own Claude Code. The app itself lives in `dumdummisha/misha-desktop`. This repository is only the website, a static Astro build with no server, no database and no client-side JavaScript of its own.
+The website at [dumdummisha.ai](https://dumdummisha.ai): the landing page for Dumdum Misha, a personal AI agent that takes routine work off its user in Slack and runs on their own computer. The details live in the public docs at [docs.dumdummisha.ai](https://docs.dumdummisha.ai) (`dumdummisha/misha`), which the landing page links to. The app itself lives in `dumdummisha/misha-desktop`. This repository is only the website, a static Astro build with no server, no database and no client-side JavaScript of its own.
 
-It has three pages:
+It has two pages and one redirect:
 
 - `/` (`src/pages/index.astro`): the landing page, one component per section in `src/components/landing/`. Its call to action, "Ask for an invite", is an email to Michal (`src/components/landing/InviteButton.astro`), since Misha is invite only.
-- `/privacy` (`src/pages/privacy.astro`): what the Misha app keeps on the user's Mac and who else is involved.
+- `/privacy`: a permanent redirect (`vercel.json`) to the canonical policy at [docs.dumdummisha.ai/privacy](https://docs.dumdummisha.ai/privacy).
 - `404.html` (`src/pages/404.astro`): the page for any address that doesn't exist.
 
 ## Layout
 
 - `src/components/`: one folder per part of the design system (`actions`, `band`, `chat`, `marketing`, `mascot`, `navigation`, `quirks`, `shell`, `status`), `Icon.astro` with the icon set in `icons.json`, and `landing/`, where each section holds its own copy.
-- `src/layouts/`: `Base` (the head, Open Graph tags, favicons and fonts) and `Canvas` (the yellow page the privacy and not-found pages sit on).
+- `src/layouts/`: `Base` (the head, Open Graph tags, favicons and fonts) and `Canvas` (the yellow page the not-found page sits on).
 - `src/styles/`: `tokens.json`, a copy of the design system's tokens, and `site.css`, the styles every page shares. Each component's own styles are a `<style>` in its `.astro` file.
 - `scripts/`: `tokens.ts` writes `src/styles/tokens.css` (gitignored) from `tokens.json`; `fonts.ts` keeps the handwriting font in step with the site's characters.
 - `public/`: the favicons, the web manifest, the Open Graph image and Caveat's OFL license.

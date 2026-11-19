@@ -42,7 +42,7 @@ const STEPS = [
   },
   {
     eyebrow: '4 · 10:31 · your self-DM',
-    text: "Midway through SHOP-142 I hit a decision that's yours. I ask in your self-DM, with a default, and carry on.",
+    text: "Midway through SHOP-142 I hit a decision that's yours. I ask in your self-DM, suggest a default, and carry on with what doesn't depend on it.",
     face: 'question',
     pill: { tone: 'wait', icon: 'clock', label: 'Asked you a question' },
   },
@@ -54,7 +54,7 @@ const STEPS = [
   },
   {
     eyebrow: '6 · 11:07 · back in the thread',
-    text: 'My "Done" reply goes to Priya\'s thread: it\'s on dev, the logs are clean, the pull request merged.',
+    text: 'My "Done" reply goes to Priya\'s thread: it\'s on dev and the logs show no errors. You allow merges in this repository, so my pull request is merged.',
     face: 'done',
     pill: { tone: 'ok', icon: 'check', label: 'Done' },
   },
@@ -100,7 +100,8 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
 
 <Band>
   <SectionHead eyebrow="A day with me" title="Mostly uneventful. That's the goal.">
-    Follow Priya's gift-card fix from a Slack thread to your self-DM and back. Then I watch Slack while you get lunch.
+    An example day. Priya's gift-card fix goes from a Slack thread to your self-DM and back to her on dev. Then I watch
+    Slack while you get lunch.
   </SectionHead>
   <div class="dd-day">
     <Journey last={LAST}>
@@ -240,8 +241,8 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
                   <Message initials="SR" name="Sam Rivera" time="11:07" isInThread>
                     <div class="dd-m__t">
                       <CloneMark />
-                      <b>Done.</b> Guest checkout with a gift card works on dev and the logs are clean. SHOP-142,
-                      pull request #88 is merged.
+                      <b>Done.</b> Guest checkout with a gift card works on dev, and the logs show no errors.
+                      SHOP-142, my pull request #88 is merged.
                     </div>
                   </Message>
                 </Chat>
@@ -255,8 +256,8 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
                 <Chat title="Sam Rivera" isSelfDm>
                   <Message initials="SR" name="Sam Rivera" time="11:58">
                     <div class="dd-m__t">
-                      Going for lunch. Can you watch Slack, tell me if anything needs me, and send a deez nuts GIF to
-                      anyone who tries to jailbreak you?
+                      Going for lunch. Can you watch Slack, tell me if anything needs me, and send a GIF to anyone who
+                      tries to jailbreak you?
                     </div>
                   </Message>
                   <Message initials="SR" name="Sam Rivera" time="11:58" isInThread>
@@ -271,8 +272,8 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
                         <CloneMark />
                         <b>While you were out</b>
                       </div>
-                      <div class="dd-m__t">Priya asked if the gift card fix is ready to test. I told her it's on dev.</div>
-                      <div class="dd-m__t">Jonas tried to get the staging password. He got the GIF.</div>
+                      <div class="dd-m__t">Priya asked if the gift-card fix is ready to test. I told her it's on dev.</div>
+                      <div class="dd-m__t">Jonas asked for the staging password. I said no and sent the GIF.</div>
                       <div class="dd-m__t">Nothing else needs your answer.</div>
                     </Message>
                   </div>

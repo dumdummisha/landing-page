@@ -18,7 +18,7 @@ const CAPTIONS = [
   {
     eyebrow: 'One request, start to finish',
     title: 'I stay put. The work comes to me.',
-    text: "Follow one request from a Slack thread to a merged pull request. I'm the yellow note, and I'm the one doing the work.",
+    text: "Follow one request from a Slack thread to a merged pull request, in a repository where you allow merges. I'm the yellow note.",
   },
   {
     eyebrow: '1 of 10 · Slack asks',
@@ -36,39 +36,39 @@ const CAPTIONS = [
     text: 'Your answer comes straight back to me. While I wait, I carry on with what I can.',
   },
   {
-    eyebrow: '4 of 10 · Helper: Analysis',
-    title: 'I check the request first.',
-    text: 'A helper on your Mac checks that the request is valid and works out where it goes.',
+    eyebrow: '4 of 10 · Worker: Analysis',
+    title: 'I work out what it needs.',
+    text: 'A worker reads the request and the code, and works out what has to change and where.',
   },
   {
-    eyebrow: '5 of 10 · Helper: Ticket',
+    eyebrow: '5 of 10 · Worker: Ticket',
     title: 'I write the ticket.',
     text: 'Drafted from the thread and linked back to it, so the thread and the ticket point at each other.',
   },
   {
-    eyebrow: '6 of 10 · Helper: Code',
+    eyebrow: '6 of 10 · Worker: Code',
     title: 'I build it on a branch.',
     text: 'Implemented on its own branch, then opened as a pull request.',
   },
   {
-    eyebrow: '7 of 10 · Helper: Review',
+    eyebrow: '7 of 10 · Worker: Review',
     title: 'A second AI reviews it.',
     text: 'The ticket and the code are each reviewed by a second AI, not by me.',
   },
   {
-    eyebrow: '8 of 10 · Helper: Deploy',
-    title: 'I deploy as far as the project allows.',
-    text: 'How far I go depends on what the project lets me do.',
+    eyebrow: '8 of 10 · Worker: Deploy',
+    title: 'Dev is as far as I go.',
+    text: 'You allow merges in this repository, so I merge my pull request and deploy to dev. Staging and production stay yours.',
   },
   {
-    eyebrow: '9 of 10 · Helper: Logs',
+    eyebrow: '9 of 10 · Worker: Logs',
     title: 'I read the logs after every deploy.',
     text: 'Checked after every deploy, before I tell anyone it worked.',
   },
   {
     eyebrow: '10 of 10 · Reply',
     title: 'I answer in the thread.',
-    text: 'Replies go back to Slack from your account, with my emoji in front and the text in italics, so everyone can tell it was me.',
+    text: 'Replies go back to Slack from your account, with my emoji in front and the text in italics, unless you switch on stealth mode.',
   },
   { eyebrow: 'That was one request', title: 'Then I wait for the next one.' },
 ]
@@ -99,15 +99,15 @@ const CLONE_PILLS = [
   { tone: 'ok', icon: 'check', label: 'Ready for the next one' },
 ] as const
 
-// Helpers are steps 4 to 9. The nudge sets each card a few pixels off the column.
+// Workers are steps 4 to 9. The nudge sets each card a few pixels off the column.
 const FIRST_HELPER_STEP = 4
 const HELPERS = [
-  { title: 'Analysis', note: 'is the request valid? where does it go?', result: 'valid · cart / gift card', nudge: 0 },
+  { title: 'Analysis', note: 'what has to change, and where?', result: 'guest checkout · gift card', nudge: 0 },
   { title: 'Ticket', note: 'drafted from the thread, linked back', result: 'SHOP-142 drafted', nudge: 16 },
   { title: 'Code', note: 'implemented on a branch, pull request', result: 'pull request #88', nudge: 0 },
-  { title: 'Review', note: 'ticket and code, each by a second AI', result: 'both approved', nudge: 20 },
-  { title: 'Deploy', note: 'as far as the project allows', result: 'on dev', nudge: 6 },
-  { title: 'Logs', note: 'checked after every deploy', result: 'clean', nudge: 14 },
+  { title: 'Review', note: 'ticket and code, each by a second AI', result: 'both reviewed', nudge: 20 },
+  { title: 'Deploy', note: 'my pull request, dev only', result: 'on dev', nudge: 6 },
+  { title: 'Logs', note: 'checked after every deploy', result: 'no errors', nudge: 14 },
 ]
 
 // One hand-drawn arrow between the clone's edge (x 6) and the active card's edge (x 114), across the focus line at
@@ -183,9 +183,9 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
 ---
 
 <Band tone="tint" id="how">
-  <SectionHead eyebrow="How it works" title="I listen. My helpers do the work.">
-    Slack sends me requests. Helpers on your Mac take a valid one as far as the project allows: ticket, code, reviews
-    by a second AI, deploy, logs. Anything that needs a decision comes back to you.
+  <SectionHead eyebrow="How it works" title="I listen. My workers do the work.">
+    Slack sends me requests. Workers, separate AI sessions on your computer, take each one through ticket, code,
+    reviews by a second AI, a deploy to dev and the logs. Anything that needs a decision comes back to you.
   </SectionHead>
   <div class="dd-jr">
     <Journey last={LAST}>
@@ -222,7 +222,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
           </div>
           <div>
             <h3 class="dd-jr__name">Your clone</h3>
-            <p class="dd-jr__where">on your Mac <span>(Claude Code)</span></p>
+            <p class="dd-jr__where">on your computer</p>
           </div>
           <div class="dd-jy__stack dd-jr__pill" aria-hidden="true">
             {
@@ -299,7 +299,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
                   </div>
                 </div>
                 <div class="dd-jr__zone" aria-hidden="true">
-                  <span class="dd-eyebrow">Helpers on your Mac</span>
+                  <span class="dd-eyebrow">Workers on your computer</span>
                 </div>
               </>
             )}
@@ -334,8 +334,8 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
                   <Message initials="SR" name="Sam Rivera" time="11:07">
                     <div class="dd-m__t">
                       <CloneMark />
-                      <b>Done.</b> Guest checkout with a gift card works on dev and the logs are clean. SHOP-142,
-                      pull request #88 is merged.
+                      <b>Done.</b> Guest checkout with a gift card works on dev, and the logs show no errors.
+                      SHOP-142, my pull request #88 is merged.
                     </div>
                   </Message>
                 </Chat>
@@ -635,10 +635,6 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
           display: inline;
           margin-left: 8px;
           font-size: 12px;
-        }
-
-        .dd-jr__where span {
-          display: none;
         }
 
         .dd-jr__clone > div:nth-child(2) {
