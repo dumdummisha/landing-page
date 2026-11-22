@@ -30,19 +30,19 @@ const STEPS = [
   },
   {
     eyebrow: '2 · 09:12 · same thread',
-    text: 'I answer in the thread, through your account, with my emoji in front and the text in italics.',
+    text: 'I answer in the thread, through your account.',
     face: 'default',
     pill: { tone: 'work', icon: 'progress', label: 'Answering in the thread' },
   },
   {
     eyebrow: '3 · 09:13 · your self-DM',
-    text: 'My "Taking" brief lands in your self-DM: the ticket, the request it came from and where the fix will land.',
+    text: 'My "Taking" brief lands in your self-DM. It has the ticket, the request it came from and where the fix will land.',
     face: 'eyes',
     pill: { tone: 'work', icon: 'progress', label: 'Taking SHOP-142' },
   },
   {
     eyebrow: '4 · 10:31 · your self-DM',
-    text: "Midway through SHOP-142 I hit a decision that's yours. I ask in your self-DM, suggest a default, and carry on with what doesn't depend on it.",
+    text: "Midway through SHOP-142 I hit a decision that's yours. I ask in your self-DM, suggest a default, and carry on with what doesn't depend on it. I can also delegate decisions to approved coworkers or their bots.",
     face: 'question',
     pill: { tone: 'wait', icon: 'clock', label: 'Asked you a question' },
   },
@@ -54,7 +54,7 @@ const STEPS = [
   },
   {
     eyebrow: '6 · 11:07 · back in the thread',
-    text: 'My "Done" reply goes to Emma\'s thread: it\'s on dev and the logs show no errors. You allow merges in this repository, so my pull request is merged.',
+    text: 'My "Done" reply goes to Emma\'s thread. It\'s on dev and the deployment checks passed. You allow merges in this repository, so my pull request is merged.',
     face: 'done',
     pill: { tone: 'ok', icon: 'check', label: 'Done' },
   },
@@ -99,8 +99,8 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
 ---
 
 <Band>
-  <SectionHead eyebrow="A day with me" title="Mostly uneventful. That's the goal.">
-    An example day. I take care of Emma's gift-card bug while you go swimming.
+  <SectionHead eyebrow="A day with me" title="Reclaim your time.">
+    I take care of Emma's gift-card bug while you go swimming.
   </SectionHead>
   <div class="dd-day">
     <Journey last={LAST}>
@@ -198,7 +198,7 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
                       <b>Delivers</b> a ticket and a fix, each reviewed by a second AI
                     </div>
                     <div class="dd-m__t">
-                      <b>Lands</b> on dev, logs checked, then a reply in Emma's thread
+                      <b>Lands</b> on dev, deployment checked, then a reply in Emma's thread
                     </div>
                   </Message>
                 </Chat>
@@ -240,13 +240,13 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
                   <Message initials="LN" name="Leo Novak" time="11:07" isInThread>
                     <div class="dd-m__t">
                       <CloneMark />
-                      <b>Done.</b> Guest checkout with a gift card works on dev, and the logs show no errors.
+                      <b>Done.</b> Guest checkout with a gift card works on dev, and the deployment checks passed.
                       SHOP-142, my pull request #88 is merged.
                     </div>
                   </Message>
                 </Chat>
                 <div class="dd-day__note">
-                  <Scribble>(I checked the logs, too.)</Scribble>
+                  <Scribble>(I ran the deployment checks, too.)</Scribble>
                 </div>
               </div>
             )}

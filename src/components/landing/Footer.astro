@@ -17,6 +17,12 @@ const DOCS = [
   { href: 'https://docs.dumdummisha.ai/privacy', label: 'Privacy' },
   { href: 'mailto:michal@dumdummisha.ai', label: 'Contact Michal' },
 ]
+
+// What the landing page downloads, in kilobytes of 1,000 bytes: the files headless Chromium fetched for the whole page
+// from the static build, plus the icon and manifest, with the text files compressed with brotli at quality 5 and
+// headers not counted. Measure again when the fonts or the page change.
+const PAGE_KB = 113
+const FONTS_KB = 92
 ---
 
 <footer class="dd-footer">
@@ -25,7 +31,8 @@ const DOCS = [
       <Brand isFullName />
       <p class="dd-muted" style="margin-top:12px;max-width:260px">Dumber than you, helpful enough.</p>
       <p class="dd-muted dd-footer__weight">
-        No JavaScript, no cookies, no trackers. Most of the weight is fonts, because I wanted to look nice.
+        No JavaScript, no cookies, no trackers. The whole page is {PAGE_KB}&nbsp;KB, and {FONTS_KB}&nbsp;KB of that is
+        fonts, because I wanted to look nice.
       </p>
     </div>
     <div>

@@ -1,6 +1,6 @@
 # Dumdum Misha website
 
-The website at [dumdummisha.ai](https://dumdummisha.ai): the landing page for Dumdum Misha, a personal AI agent that takes routine work off its user in Slack and runs on their own computer. The details live in the public docs at [docs.dumdummisha.ai](https://docs.dumdummisha.ai) (`dumdummisha/docs`), which the landing page links to. The app itself lives in `dumdummisha/desktop`. This repository is only the website, a static Astro build with no server, no database and no client-side JavaScript of its own.
+The website at [dumdummisha.ai](https://dumdummisha.ai): the landing page for Dumdum Misha, a personal AI assistant that takes routine work off its user in Slack and runs on their own computer. The details live in the public docs at [docs.dumdummisha.ai](https://docs.dumdummisha.ai) (`dumdummisha/docs`), which the landing page links to. The app itself lives in `dumdummisha/desktop`. This repository is only the website, a static Astro build with no server, no database and no client-side JavaScript of its own.
 
 It has two pages and one redirect:
 

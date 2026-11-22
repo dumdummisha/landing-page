@@ -35,39 +35,39 @@ const CAPTIONS = [
     text: 'Your answer comes straight back to me. While I wait, I carry on with what I can.',
   },
   {
-    eyebrow: '4 of 10 · Worker: Analysis',
+    eyebrow: '4 of 10 · Worker · Analysis',
     title: 'I work out what it needs.',
     text: 'A worker reads the request and the code, and works out what has to change and where.',
   },
   {
-    eyebrow: '5 of 10 · Worker: Ticket',
+    eyebrow: '5 of 10 · Worker · Ticket',
     title: 'I write the ticket.',
     text: 'Drafted from the thread and linked back to it, so the thread and the ticket point at each other.',
   },
   {
-    eyebrow: '6 of 10 · Worker: Code',
+    eyebrow: '6 of 10 · Worker · Code',
     title: 'I build it on a branch.',
     text: 'Implemented on its own branch, then opened as a pull request.',
   },
   {
-    eyebrow: '7 of 10 · Worker: Review',
+    eyebrow: '7 of 10 · Worker · Review',
     title: 'A second AI reviews it.',
     text: 'The ticket and the code are each reviewed by a second AI, not by me.',
   },
   {
-    eyebrow: '8 of 10 · Worker: Deploy',
+    eyebrow: '8 of 10 · Worker · Deploy',
     title: 'I ship it.',
     text: 'You allow merges in this repository, so I merge my pull request and deploy it.',
   },
   {
-    eyebrow: '9 of 10 · Worker: Logs',
-    title: 'I read the logs after every deploy.',
+    eyebrow: '9 of 10 · Worker · Deployment check',
+    title: 'I check every deploy.',
     text: 'Checked after every deploy, before I tell anyone it worked.',
   },
   {
     eyebrow: '10 of 10 · Reply',
     title: 'I answer in the thread.',
-    text: 'Replies go back to Slack from your account, with my emoji in front and the text in italics, unless you switch on stealth mode.',
+    text: 'Replies go back to Slack from your account.',
   },
   { eyebrow: 'That was one request', title: 'Then I wait for the next one.' },
 ]
@@ -93,7 +93,7 @@ const CLONE_PILLS = [
   { tone: 'work', icon: 'progress', label: 'Working · Code' },
   { tone: 'work', icon: 'progress', label: 'Working · Review' },
   { tone: 'work', icon: 'progress', label: 'Working · Deploy' },
-  { tone: 'work', icon: 'progress', label: 'Working · Logs' },
+  { tone: 'work', icon: 'progress', label: 'Working · Deployment check' },
   { tone: 'ok', icon: 'check', label: 'Replied in the thread' },
   { tone: 'ok', icon: 'check', label: 'Ready for the next one' },
 ] as const
@@ -106,7 +106,7 @@ const HELPERS = [
   { title: 'Code', note: 'implemented on a branch, pull request', result: 'pull request #88', nudge: 0 },
   { title: 'Review', note: 'ticket and code, each by a second AI', result: 'both reviewed', nudge: 20 },
   { title: 'Deploy', note: 'my pull request, merged and deployed', result: 'on dev', nudge: 6 },
-  { title: 'Logs', note: 'checked after every deploy', result: 'no errors', nudge: 14 },
+  { title: 'Deployment check', note: 'run after every deploy', result: 'passed', nudge: 14 },
 ]
 
 // One hand-drawn arrow between the clone's edge (x 6) and the active card's edge (x 114), across the focus line at
@@ -183,8 +183,8 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
 
 <Band tone="tint" id="how">
   <SectionHead eyebrow="How it works" title="I listen. My workers do the work.">
-    Slack sends me requests, and I hand them to workers that run in parallel in the background. Each takes one ticket:
-    it writes the code, a second AI reviews the change, then it deploys and checks the logs. Workers can also test the
+    Slack sends me requests, and I hand them to workers that run in parallel in the background. Each takes one ticket.
+    It writes the code, a second AI reviews the change, then it deploys and runs the deployment checks. Workers can also test the
     finished feature end to end with cURL. Anything that needs a decision comes back to you.
   </SectionHead>
   <div class="dd-jr">
@@ -334,7 +334,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
                   <Message initials="LN" name="Leo Novak" time="11:07">
                     <div class="dd-m__t">
                       <CloneMark />
-                      <b>Done.</b> Guest checkout with a gift card works on dev, and the logs show no errors.
+                      <b>Done.</b> Guest checkout with a gift card works on dev, and the deployment checks passed.
                       SHOP-142, my pull request #88 is merged.
                     </div>
                   </Message>
