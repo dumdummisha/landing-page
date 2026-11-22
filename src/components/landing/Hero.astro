@@ -1,13 +1,10 @@
 ---
 import Button from '../actions/Button.astro'
-import Chat from '../chat/Chat.astro'
-import CloneMark from '../chat/CloneMark.astro'
-import Message from '../chat/Message.astro'
 import Mascot from '../mascot/Mascot.astro'
 import Nav from '../navigation/Nav.astro'
 import Scribble from '../quirks/Scribble.astro'
+import HeroScenes from './HeroScenes.astro'
 import InviteButton from './InviteButton.astro'
-import EmmaAsks from './EmmaAsks.astro'
 
 const LINKS = [
   { href: '#does', label: 'What I do' },
@@ -24,8 +21,8 @@ const LINKS = [
       <div>
         <h1 class="display-xl">Dumber than you, helpful <span class="dd-mark">enough.</span></h1>
         <p class="body-l dd-hero__sub">
-          A personal AI agent for the routine work that reaches you in Slack: it answers the questions, takes on the
-          small jobs and brings you only the decisions that need you.
+          Your personal AI assistant for the routine work that reaches you in Slack. It answers the questions, takes on
+          the small jobs and brings you only the decisions that need you.
         </p>
         <div class="dd-hero__cta">
           <InviteButton size="lg" />
@@ -33,16 +30,10 @@ const LINKS = [
             >Read the docs<span class="dd-vh"> (opens in a new tab)</span></Button
           >
         </div>
-        <p class="dd-hero__pilot">Invite-only pilot. Free for now, on your own Claude subscription.</p>
+        <p class="dd-hero__pilot">Invite-only pilot. Runs on your own Anthropic or OpenAI subscription.</p>
       </div>
       <div style="position:relative">
-        <Chat title="# shop-backend">
-          <EmmaAsks />
-          <Message initials="LN" name="Leo Novak" time="09:12" isInThread>
-            <div class="dd-m__t"><CloneMark />I'm on it, SHOP-142.</div>
-            <div class="dd-m__t">I'll post here when it's on dev.</div>
-          </Message>
-        </Chat>
+        <HeroScenes />
         <div class="dd-peek" style="transform:rotate(var(--tilt-4));right:-36px;bottom:-104px">
           <Mascot size={150} isLabelled />
         </div>

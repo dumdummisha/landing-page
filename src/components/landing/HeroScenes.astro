@@ -1,0 +1,459 @@
+---
+// The hero's conversations: one thread per kind of person who asks, playing in turn without any script. Each scene
+// plays the ask, my eyes, "typing" and the reply inside its own window of the cycle, and the tab above it fills while
+// it plays. Hovering or focusing pauses the cycle; picking a tab stops it on that scene. Without motion the scenes
+// still take turns, but cross-fade with their messages already in place.
+import Chat from '../chat/Chat.astro'
+import CloneMark from '../chat/CloneMark.astro'
+import Message from '../chat/Message.astro'
+import ReactionChip from '../chat/ReactionChip.astro'
+
+const SCENES = [
+  {
+    who: 'Developers',
+    chat: { title: '# shop-backend', isSelfDm: false },
+    ask: {
+      initials: 'EL',
+      name: 'Emma Lee',
+      time: '09:12',
+      isColleague: true,
+      text: 'can you check why guest checkout fails when the cart has a gift card?',
+    },
+    reply: { time: '09:12', lines: ["I'm on it, SHOP-142.", "I'll post here when it's on dev."] },
+  },
+  {
+    who: 'PMs',
+    chat: { title: 'Leo Novak', isSelfDm: true },
+    ask: { initials: 'LN', name: 'Leo Novak', time: '09:40', isColleague: false, text: 'What does SHOP-150 leave out of scope?' },
+    reply: {
+      time: '09:41',
+      lines: ['Foreign-currency gift cards and gift-card refunds.', 'The ticket lists both as later work.'],
+    },
+  },
+  {
+    who: 'Designers',
+    chat: { title: 'Leo Novak', isSelfDm: true },
+    ask: {
+      initials: 'LN',
+      name: 'Leo Novak',
+      time: '10:05',
+      isColleague: false,
+      text: 'Render the checkout screen from this Figma link and list its button labels.',
+    },
+    reply: {
+      time: '10:06',
+      lines: ['Apply gift card, Pay now and Back to cart.', 'Top to bottom, from the Checkout frame.'],
+    },
+  },
+  {
+    who: 'Everyone',
+    chat: { title: '# shop-backend', isSelfDm: false },
+    ask: {
+      initials: 'EL',
+      name: 'Emma Lee',
+      time: '13:20',
+      isColleague: true,
+      text: "what did we decide about partial gift cards in Tuesday's planning?",
+    },
+    reply: {
+      time: '13:21',
+      lines: ['The guest pays the rest by card.', "That's from the meeting's transcript."],
+    },
+  },
+] as const
+
+// The keyframes below give each scene a quarter of the cycle.
+if (SCENES.length !== 4) {
+  throw new Error(`HeroScenes plays exactly 4 scenes, got ${SCENES.length}`)
+}
+---
+
+<div class="dd-sc">
+  <fieldset class="dd-sc__tabs">
+    <legend class="dd-vh">Show the conversation with</legend>
+    {
+      SCENES.map((scene, i) => (
+        <label class="dd-sc__tab" style={`--i:${i}`}>
+          <input class="dd-vh" type="radio" name="dd-scene" value={i} />
+          {scene.who}
+        </label>
+      ))
+    }
+  </fieldset>
+  <div class="dd-sc__stage">
+    {
+      SCENES.map((scene, i) => (
+        <div class="dd-sc__scene" style={`--i:${i}`}>
+          <Chat title={scene.chat.title} isSelfDm={scene.chat.isSelfDm}>
+            <Message
+              initials={scene.ask.initials}
+              name={scene.ask.name}
+              time={scene.ask.time}
+              isColleague={scene.ask.isColleague}
+            >
+              <div class="dd-m__t">
+                {scene.ask.isColleague && <span style="color:var(--link)">@Leo </span>}
+                {scene.ask.text}
+              </div>
+              <div class="dd-sc__react">
+                <ReactionChip />
+              </div>
+            </Message>
+            <div class="dd-sc__reply">
+              <span class="dd-sc__typing" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+              <div class="dd-sc__said">
+                <Message initials="LN" name="Leo Novak" time={scene.reply.time} isInThread>
+                  <div class="dd-m__t">
+                    <CloneMark />
+                    {scene.reply.lines[0]}
+                  </div>
+                  <div class="dd-m__t dd-sc__more">{scene.reply.lines[1]}</div>
+                </Message>
+              </div>
+            </div>
+          </Chat>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .dd-sc {
+    --window: 8s;
+    --cycle: calc(var(--window) * 4);
+  }
+
+  /* The tabs. */
+
+  .dd-sc__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    border: 0;
+  }
+
+  .dd-sc__tab {
+    position: relative;
+    overflow: hidden;
+    padding: 6px 12px 8px;
+    font: 600 13px/16px var(--font-sans);
+    background: var(--misha-tint);
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .dd-sc__tab:has(input:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* The bar under a tab fills while its scene plays, yellow on the playing tab's ink. */
+  .dd-sc__tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--misha);
+    transform-origin: left;
+    scale: 0 1;
+  }
+
+  /* The scenes share one cell, so the stage keeps the tallest one's height. */
+
+  .dd-sc__stage {
+    display: grid;
+  }
+
+  .dd-sc__scene {
+    grid-area: 1 / 1;
+    visibility: hidden;
+  }
+
+  .dd-sc__scene:first-child {
+    visibility: visible;
+  }
+
+  .dd-sc__reply {
+    position: relative;
+  }
+
+  .dd-sc__react {
+    width: fit-content;
+    transform-origin: left center;
+  }
+
+  /* The dots sit where the reply will start. */
+  .dd-sc__typing {
+    position: absolute;
+    left: 54px;
+    top: 16px;
+    display: flex;
+    gap: 4px;
+    padding: 8px 10px;
+    background: var(--misha-tint);
+    opacity: 0;
+  }
+
+  .dd-sc__typing i {
+    width: 6px;
+    height: 6px;
+    background: var(--ink);
+  }
+
+  /* Each part plays in its scene's window: the cycle long, shifted by the scenes before it. The delays are negative,
+     so every part starts at once, part-way through its cycle, instead of showing its first keyframe while it waits. */
+  .dd-sc__tab,
+  .dd-sc__tab::after,
+  .dd-sc__scene,
+  .dd-sc__react,
+  .dd-sc__typing,
+  .dd-sc__typing i,
+  .dd-sc__said,
+  .dd-sc__more {
+    animation-duration: var(--cycle);
+    animation-delay: calc((var(--i) - 4) * var(--window));
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
+  }
+
+  .dd-sc__tab {
+    animation-name: dd-sc-tab;
+    animation-timing-function: step-end;
+  }
+
+  .dd-sc__tab::after {
+    animation-name: dd-sc-fill;
+    animation-timing-function: linear;
+  }
+
+  .dd-sc__scene {
+    animation-name: dd-sc-scene;
+  }
+
+  .dd-sc__react {
+    animation-name: dd-sc-react;
+  }
+
+  .dd-sc__typing {
+    animation-name: dd-sc-typing;
+  }
+
+  .dd-sc__typing i {
+    animation-name: dd-sc-dot;
+    animation-duration: 0.9s;
+    animation-delay: calc(var(--dot) * 0.15s);
+  }
+
+  .dd-sc__typing i:nth-child(1) {
+    --dot: 0;
+  }
+
+  .dd-sc__typing i:nth-child(2) {
+    --dot: 1;
+  }
+
+  .dd-sc__typing i:nth-child(3) {
+    --dot: 2;
+  }
+
+  .dd-sc__said {
+    animation-name: dd-sc-said;
+  }
+
+  .dd-sc__more {
+    animation-name: dd-sc-more;
+  }
+
+  /* Looking at a scene holds it. */
+  .dd-sc:is(:hover, :focus-within) :is(.dd-sc__tab, .dd-sc__stage *),
+  .dd-sc:is(:hover, :focus-within) .dd-sc__tab::after {
+    animation-play-state: paused;
+  }
+
+  /* A picked tab stops the cycle and shows its scene whole. */
+  .dd-sc:has(input:checked) :is(.dd-sc__tab, .dd-sc__stage *),
+  .dd-sc:has(input:checked) .dd-sc__tab::after {
+    animation: none;
+  }
+
+  .dd-sc:has(input:checked) .dd-sc__scene {
+    visibility: hidden;
+  }
+
+  .dd-sc__tab:has(input:checked) {
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+
+  .dd-sc:has(.dd-sc__tab:nth-child(2) input:checked) .dd-sc__scene:nth-child(1),
+  .dd-sc:has(.dd-sc__tab:nth-child(3) input:checked) .dd-sc__scene:nth-child(2),
+  .dd-sc:has(.dd-sc__tab:nth-child(4) input:checked) .dd-sc__scene:nth-child(3),
+  .dd-sc:has(.dd-sc__tab:nth-child(5) input:checked) .dd-sc__scene:nth-child(4) {
+    visibility: visible;
+  }
+
+  /* Without motion the scenes cross-fade in place, already written. */
+  @media (prefers-reduced-motion: reduce) {
+    .dd-sc__scene {
+      animation-name: dd-sc-fade;
+    }
+
+    .dd-sc__react,
+    .dd-sc__typing,
+    .dd-sc__typing i,
+    .dd-sc__said,
+    .dd-sc__more {
+      animation: none;
+    }
+  }
+
+  /* One window is 25% of the cycle; every keyframe below sits inside it. */
+  @keyframes dd-sc-tab {
+    0% {
+      background: var(--ink);
+      color: var(--on-ink);
+    }
+
+    25%,
+    100% {
+      background: var(--misha-tint);
+      color: var(--ink);
+    }
+  }
+
+  @keyframes dd-sc-fill {
+    0% {
+      scale: 0 1;
+    }
+
+    25% {
+      scale: 1 1;
+    }
+
+    25.01%,
+    100% {
+      scale: 0 1;
+    }
+  }
+
+  @keyframes dd-sc-scene {
+    0% {
+      visibility: hidden;
+      opacity: 0;
+      translate: 0 16px;
+    }
+
+    2%,
+    23% {
+      visibility: visible;
+      opacity: 1;
+      translate: 0 0;
+    }
+
+    25%,
+    100% {
+      visibility: hidden;
+      opacity: 0;
+      translate: 0 -8px;
+    }
+  }
+
+  @keyframes dd-sc-fade {
+    0% {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    2%,
+    23% {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    25%,
+    100% {
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+
+  @keyframes dd-sc-react {
+    0%,
+    5% {
+      scale: 0;
+    }
+
+    7% {
+      scale: 1.2;
+    }
+
+    8%,
+    100% {
+      scale: 1;
+    }
+  }
+
+  @keyframes dd-sc-typing {
+    0%,
+    6% {
+      opacity: 0;
+    }
+
+    7%,
+    10% {
+      opacity: 1;
+    }
+
+    10.5%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes dd-sc-dot {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+
+    30% {
+      translate: 0 -4px;
+    }
+  }
+
+  @keyframes dd-sc-said {
+    0%,
+    10% {
+      opacity: 0;
+      translate: 0 8px;
+    }
+
+    12%,
+    100% {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  @keyframes dd-sc-more {
+    0%,
+    14% {
+      opacity: 0;
+    }
+
+    16%,
+    100% {
+      opacity: 1;
+    }
+  }
+</style>
