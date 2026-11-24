@@ -4,7 +4,7 @@ The website at [dumdummisha.ai](https://dumdummisha.ai): the landing page for Du
 
 It has two pages and one redirect:
 
-- `/` (`src/pages/index.astro`): the landing page, one component per section in `src/components/landing/`. Its call to action, "Ask for an invite", is an email to Michal (`src/components/landing/InviteButton.astro`), since Misha is invite only.
+- `/` (`src/pages/index.astro`): the landing page, one component per section in `src/components/landing/`. It has two calls to action: "Ask for an invite", an email to Michal (`src/components/landing/InviteButton.astro`), since Misha is invite only, and the hero's "Book a call with Michal", a link to his Calendly booking page (`src/components/landing/Hero.astro`).
 - `/privacy`: a permanent redirect (`vercel.json`) to the canonical policy at [docs.dumdummisha.ai/privacy](https://docs.dumdummisha.ai/privacy).
 - `404.html` (`src/pages/404.astro`): the page for any address that doesn't exist.
 
