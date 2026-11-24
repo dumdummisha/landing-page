@@ -80,12 +80,34 @@ const LINKS = [
     color: var(--ink-muted);
   }
 
+  /* The two buttons stay on one line at every width: below the row they need at full size, the gap, their padding
+     and their type shrink together with the row's own width, so the rule follows the row in both the one- and the
+     two-column layout. Each size runs in a straight line from its floor, with the row at 288px (a 320px viewport,
+     the narrowest common phone and WCAG's reflow width, less the 16px phone gutters), to the lg button's size, with
+     the row at 502px (both labels at 18px, 317.87px measured, plus the lg padding and the 24px gap). The row's need
+     is a straight line between the same two points and fits at both, so it fits at every width between them. The
+     floors are the sm button's 14px/18px type, the base button's 16px vertical padding and space-2 for the
+     horizontal padding and the gap. On a narrower row the buttons shrink into their padding (min-width: 0) instead
+     of wrapping or widening the page. */
   .dd-hero__cta {
+    container-type: inline-size;
     display: flex;
-    gap: var(--space-5);
+    /* In a flex gap, 100% is the row's width, the length 100cqi stands for in the buttons below. */
+    gap: clamp(var(--space-2), calc(var(--space-2) + 16 * (100% - 288px) / 214), var(--space-5));
     align-items: center;
     margin-top: var(--space-7);
-    flex-wrap: wrap;
+  }
+
+  /* The buttons are their own components, so the scoped rule has to reach into them. --cta-grow is 0px with the row
+     at 288px and 1px at 502px, so a size is its floor plus its range in px times --cta-grow. */
+  .dd-hero__cta :global(.dd-btn--lg) {
+    --cta-grow: calc((100cqi - 288px) / 214);
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: clamp(16px, calc(16px + 6 * var(--cta-grow)), 22px)
+      clamp(var(--space-2), calc(var(--space-2) + 32 * var(--cta-grow)), 40px);
+    font-size: clamp(14px, calc(14px + 4 * var(--cta-grow)), 18px);
+    line-height: clamp(18px, calc(18px + 6 * var(--cta-grow)), 24px);
   }
 
   .dd-mark {
@@ -128,11 +150,6 @@ const LINKS = [
 
     .dd-hero :global(.dd-hero__note) {
       display: none;
-    }
-
-    /* The buttons are their own components, so the scoped rule has to reach into them. */
-    .dd-hero__cta :global(.dd-btn--lg) {
-      padding: 18px 24px;
     }
   }
 </style>
