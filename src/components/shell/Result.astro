@@ -19,13 +19,9 @@ const { mood, size, title } = Astro.props
   </div>
   <h1 class="heading-2">{title}</h1>
   <p><slot /></p>
-  {
-    Astro.slots.has('actions') && (
-      <div class="dd-row" style="justify-content:center">
-        <slot name="actions" />
-      </div>
-    )
-  }
+  <div class="dd-row" style="justify-content:center">
+    <slot name="actions" />
+  </div>
 </div>
 
 <style>

@@ -1,5 +1,6 @@
 ---
-// The design system's flat, square button, as a link: every button on the site goes somewhere.
+// The design system's flat, square button, as a link: every button on the site goes somewhere. Ink on the yellow ground
+// it sits on.
 import type { HTMLAttributes } from 'astro/types'
 
 type Props = {
@@ -25,8 +26,8 @@ const classes = ['dd-btn', variant !== 'primary' && `dd-btn--${variant}`, size &
     font: 600 16px/20px var(--font-sans);
     padding: 16px 28px;
     border: 0;
-    background: var(--misha);
-    color: var(--on-misha);
+    background: var(--ink);
+    color: var(--on-ink);
     cursor: pointer;
     text-decoration: none;
     transition: background 0.15s;
@@ -34,12 +35,12 @@ const classes = ['dd-btn', variant !== 'primary' && `dd-btn--${variant}`, size &
   }
 
   .dd-btn:hover {
-    background: var(--misha-deep);
+    background: var(--ink-muted);
   }
 
-  /* The ground a secondary sits on sets --btn2-bg (src/styles/site.css), so it never matches that ground. */
+  /* White, so it never matches the yellow ground it sits on. */
   .dd-btn--secondary {
-    background: var(--btn2-bg, var(--surface-300));
+    background: var(--surface-200);
     color: var(--ink);
   }
 
@@ -59,29 +60,14 @@ const classes = ['dd-btn', variant !== 'primary' && `dd-btn--${variant}`, size &
     line-height: 24px;
   }
 
-  /* While the click is down the button turns ink, so the click registers without script. */
+  /* While the click is down the button turns white, so the click registers without script. */
   .dd-btn:active {
-    background: var(--ink);
-    color: var(--on-ink);
+    background: var(--surface-200);
+    color: var(--ink);
   }
 
   .dd-btn--secondary:active {
     background: var(--misha);
-    color: var(--ink);
-  }
-
-  :global(.dd-yellow) .dd-btn:not(.dd-btn--secondary) {
-    background: var(--ink);
-    color: var(--on-ink);
-  }
-
-  :global(.dd-yellow) .dd-btn:not(.dd-btn--secondary):hover {
-    background: var(--ink-muted);
-  }
-
-  /* On yellow, ink is already the primary's fill, so a pressed button turns white. */
-  :global(.dd-yellow) .dd-btn:not(.dd-btn--secondary):active {
-    background: var(--surface-200);
     color: var(--ink);
   }
 </style>

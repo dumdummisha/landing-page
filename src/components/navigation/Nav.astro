@@ -1,19 +1,17 @@
 ---
 // The top navigation: the brand, the page's links (hidden on a phone) and the actions on the right in the slot.
-// Without links or actions it is just the brand, at the same height as on the landing page.
 import NewTabLink from '../actions/NewTabLink.astro'
 import Brand from './Brand.astro'
 
 interface Props {
-  links?: readonly { href: string; label: string; isNewTab?: boolean }[]
-  isFullName?: boolean
+  links: readonly { href: string; label: string; isNewTab?: boolean }[]
 }
 
-const { links = [], isFullName = false } = Astro.props
+const { links } = Astro.props
 ---
 
 <nav class="dd-nav">
-  <Brand isFullName={isFullName} />
+  <Brand />
   <div class="dd-nav__links">
     {links.map(({ href, label, isNewTab }) => (isNewTab ? <NewTabLink href={href}>{label}</NewTabLink> : <a href={href}>{label}</a>))}
   </div>

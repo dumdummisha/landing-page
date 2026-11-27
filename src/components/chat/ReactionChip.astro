@@ -3,7 +3,7 @@
 import Reaction from '../mascot/Reaction.astro'
 ---
 
-<span class="dd-react dd-react--you"><Reaction name="looking" size={16} />1</span>
+<span class="dd-react"><Reaction name="looking" size={16} />1</span>
 
 <style>
   .dd-react {
@@ -13,16 +13,7 @@ import Reaction from '../mascot/Reaction.astro'
     margin-top: 8px;
     margin-right: 6px;
     padding: 2px 9px;
-    background: var(--surface-200);
+    background: var(--misha);
     font: 600 12px/18px var(--font-sans);
-  }
-
-  :global(.dd-tint) .dd-react,
-  :global(.dd-yellow) .dd-react {
-    background: var(--misha-tint);
-  }
-
-  .dd-react--you {
-    background: var(--misha) !important;
   }
 </style>

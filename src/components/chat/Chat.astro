@@ -1,7 +1,7 @@
 ---
 interface Props {
-  // The conversation's name in a bar above; none for a single message on its own.
-  title?: string
+  // The conversation's name, in a bar above the messages.
+  title: string
   isSelfDm?: boolean
 }
 
@@ -9,7 +9,7 @@ const { title, isSelfDm = false } = Astro.props
 ---
 
 <div class="dd-chat">
-  {title && <div class="dd-chat__bar">{title}{isSelfDm && <span> (you)</span>}</div>}
+  <div class="dd-chat__bar">{title}{isSelfDm && <span> (you)</span>}</div>
   <div class="dd-chat__body"><slot /></div>
 </div>
 

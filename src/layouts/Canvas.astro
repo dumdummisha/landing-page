@@ -10,7 +10,7 @@ const { title } = Astro.props
 ---
 
 <Base title={`${title} · Misha`}>
-  <div class="dd-canvas dd-yellow" style="min-height:100vh">
+  <div class="dd-canvas dd-yellow">
     <main class="dd-canvas__mid"><slot /></main>
   </div>
 </Base>
@@ -18,12 +18,11 @@ const { title } = Astro.props
 <style>
   .dd-canvas {
     background: var(--misha);
-    min-height: 440px;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  /* The nav brings its own padding, so the canvas pads only what is under it. */
   .dd-canvas__mid {
     flex: 1;
     display: grid;

@@ -1,5 +1,5 @@
-/* The base every page shares: the reset, the bands' colours, layout and text utilities, cards, button grounds and the
-   phone sizes. A component's own look lives in its .astro file. */
+/* The base every page shares: the reset, the bands' colours, layout and text utilities, cards and the phone
+   sizes. A component's own look lives in its .astro file. */
 
 /* Reset: page colours and type, no default margins or list styles, links and the focus ring. */
 
@@ -42,11 +42,11 @@ a {
 }
 
 /* A text link gets a fill behind it on hover; its text keeps its colour. */
-a:hover:not(.dd-btn):not(.dd-brand):not([aria-current]) {
+a:hover:not(.dd-btn):not(.dd-brand) {
   background: var(--misha-tint);
 }
 
-.dd-yellow a:hover:not(.dd-btn):not(.dd-brand):not([aria-current]) {
+.dd-yellow a:hover:not(.dd-btn):not(.dd-brand) {
   background: var(--misha-deep);
 }
 
@@ -177,41 +177,15 @@ a:hover:not(.dd-btn):not(.dd-brand):not([aria-current]) {
   background: var(--surface-300);
 }
 
-/* Cards: tinted on the page, white on a coloured band. A yellow card stays yellow on a tinted band, so its rule
-   comes after the band rule it has to beat. */
+/* Cards: tinted, or yellow. The yellow rule comes after the base rule it has to beat. */
 
 .dd-card {
   background: var(--surface-300);
   padding: var(--space-6);
 }
 
-.dd-tint .dd-card,
-.dd-yellow .dd-card {
-  background: var(--surface-200);
-}
-
-.dd-card--yellow,
-.dd-tint .dd-card--yellow {
-  background: var(--misha);
-}
-
-/* Button grounds: a secondary button is white on any pale or yellow ground and pale on white, so it never
-   disappears into the ground it sits on (see src/components/actions/Button.astro). */
-
-.dd-card,
-.dd-tint,
-.dd-yellow,
 .dd-card--yellow {
-  --btn2-bg: var(--surface-200);
-}
-
-.dd-tint .dd-card,
-.dd-yellow .dd-card {
-  --btn2-bg: var(--surface-300);
-}
-
-.dd-tint .dd-card--yellow {
-  --btn2-bg: var(--surface-200);
+  background: var(--misha);
 }
 
 /* The mascot peeking over an edge: placed by its parent, never in the way of a click. */

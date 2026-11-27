@@ -1,14 +1,8 @@
 ---
-// The brand in the navigation and the footer. Its full name is the landing page's alone; every other page calls the
-// clone Misha.
-interface Props {
-  isFullName?: boolean
-}
-
-const { isFullName = false } = Astro.props
+// The brand in the navigation and the footer.
 ---
 
-<a class="dd-brand" href="/">{isFullName ? 'Dumdum Misha' : 'Misha'}</a>
+<a class="dd-brand" href="/">Dumdum Misha</a>
 
 <style>
   .dd-brand {
