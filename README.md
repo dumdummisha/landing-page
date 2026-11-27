@@ -65,3 +65,7 @@ uvx --from fonttools==4.67.0 --with brotli==1.2.1 pyftsubset caveat-original.wof
   --output-file=src/assets/fonts/caveat.woff2 --flavor=woff2 --unicodes=U+0020-007E,U+00A0 \
   --layout-features=kern,liga --name-IDs=0,1,2,3,4,5,6,13,14
 ```
+
+## Licence
+
+Code and prose are under the [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) for the Caveat font and the brand artwork.

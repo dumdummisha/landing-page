@@ -1,0 +1,22 @@
+Dumdum Misha website
+
+The code and prose in this repository are licensed under the Apache License,
+Version 2.0 (see LICENSE), except for the files listed below.
+
+Fonts
+
+The Caveat font files are licensed under the SIL Open Font License, Version
+1.1. The copyright notice and licence text sit beside the font:
+
+  Caveat   public/fonts/caveat-OFL.txt
+
+src/assets/fonts/caveat.woff2 is a subset of that font and carries the same
+licence. The other families the site uses come from Google Fonts at build time
+and are not part of this repository.
+
+Brand artwork
+
+The Dumdum Misha name, the mascot and the app icon are brand artwork. The
+image files listed in artwork.json are included so this site and repository can
+show them; they are not licensed under the Apache License, and they are not
+licensed for reuse as a brand or to identify another product or service.
