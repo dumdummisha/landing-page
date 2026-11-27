@@ -8,16 +8,9 @@ const SOURCE = 'src/assets/fonts/caveat-original.woff2'
 const TARGET = 'src/assets/fonts/caveat.woff2'
 const MANIFEST = 'src/assets/fonts/caveat-unicodes.txt'
 
-const astroFiles = (directory: string): string[] =>
-  readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-    const path = join(directory, entry.name)
-
-    if (entry.isDirectory()) {
-      return astroFiles(path)
-    }
-
-    return entry.isFile() && path.endsWith('.astro') ? [path] : []
-  })
+const astroFiles = readdirSync('src', { recursive: true, withFileTypes: true })
+  .filter((entry) => entry.isFile() && entry.name.endsWith('.astro'))
+  .map((entry) => join(entry.parentPath, entry.name))
 
 const codepoints = new Set<number>()
 
@@ -27,7 +20,7 @@ for (let codepoint = 0x20; codepoint <= 0x7e; codepoint += 1) {
 
 codepoints.add(0xa0)
 
-for (const file of astroFiles('src')) {
+for (const file of astroFiles) {
   for (const character of readFileSync(file, 'utf8')) {
     const codepoint = character.codePointAt(0)
     if (codepoint !== undefined && codepoint > 0x7f) {

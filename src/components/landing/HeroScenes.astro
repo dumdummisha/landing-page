@@ -8,23 +8,20 @@ import CloneMark from '../chat/CloneMark.astro'
 import Message from '../chat/Message.astro'
 import ReactionChip from '../chat/ReactionChip.astro'
 
+const EMMA = { initials: 'EL', name: 'Emma Lee', isColleague: true }
+const LEO = { initials: 'LN', name: 'Leo Novak', isColleague: false }
+
 const SCENES = [
   {
     who: 'Developers',
     chat: { title: '# shop-backend', isSelfDm: false },
-    ask: {
-      initials: 'EL',
-      name: 'Emma Lee',
-      time: '09:12',
-      isColleague: true,
-      text: 'can you check why guest checkout fails when the cart has a gift card?',
-    },
+    ask: { ...EMMA, time: '09:12', text: 'can you check why guest checkout fails when the cart has a gift card?' },
     reply: { time: '09:12', lines: ["I'm on it, SHOP-142.", "I'll post here when it's on dev."] },
   },
   {
     who: 'PMs',
     chat: { title: 'Leo Novak', isSelfDm: true },
-    ask: { initials: 'LN', name: 'Leo Novak', time: '09:40', isColleague: false, text: 'What does SHOP-150 leave out of scope?' },
+    ask: { ...LEO, time: '09:40', text: 'What does SHOP-150 leave out of scope?' },
     reply: {
       time: '09:41',
       lines: ['Foreign-currency gift cards and gift-card refunds.', 'The ticket lists both as later work.'],
@@ -33,13 +30,7 @@ const SCENES = [
   {
     who: 'Designers',
     chat: { title: 'Leo Novak', isSelfDm: true },
-    ask: {
-      initials: 'LN',
-      name: 'Leo Novak',
-      time: '10:05',
-      isColleague: false,
-      text: 'Render the checkout screen from this Figma link and list its button labels.',
-    },
+    ask: { ...LEO, time: '10:05', text: 'Render the checkout screen from this Figma link and list its button labels.' },
     reply: {
       time: '10:06',
       lines: ['Apply gift card, Pay now and Back to cart.', 'Top to bottom, from the Checkout frame.'],
@@ -48,13 +39,7 @@ const SCENES = [
   {
     who: 'Everyone',
     chat: { title: '# shop-backend', isSelfDm: false },
-    ask: {
-      initials: 'EL',
-      name: 'Emma Lee',
-      time: '13:20',
-      isColleague: true,
-      text: "what did we decide about partial gift cards in Tuesday's planning?",
-    },
+    ask: { ...EMMA, time: '13:20', text: "what did we decide about partial gift cards in Tuesday's planning?" },
     reply: {
       time: '13:21',
       lines: ['The guest pays the rest by card.', "That's from the meeting's transcript."],
@@ -82,18 +67,13 @@ if (SCENES.length !== 4) {
   </fieldset>
   <div class="dd-sc__stage">
     {
-      SCENES.map((scene, i) => (
+      SCENES.map(({ chat, ask: { text, ...author }, reply }, i) => (
         <div class="dd-sc__scene" style={`--i:${i}`}>
-          <Chat title={scene.chat.title} isSelfDm={scene.chat.isSelfDm}>
-            <Message
-              initials={scene.ask.initials}
-              name={scene.ask.name}
-              time={scene.ask.time}
-              isColleague={scene.ask.isColleague}
-            >
+          <Chat title={chat.title} isSelfDm={chat.isSelfDm}>
+            <Message {...author}>
               <div class="dd-m__t">
-                {scene.ask.isColleague && <span style="color:var(--link)">@Leo </span>}
-                {scene.ask.text}
+                {author.isColleague && <span style="color:var(--link)">@Leo </span>}
+                {text}
               </div>
               <div class="dd-sc__react">
                 <ReactionChip />
@@ -101,17 +81,17 @@ if (SCENES.length !== 4) {
             </Message>
             <div class="dd-sc__reply">
               <span class="dd-sc__typing" aria-hidden="true">
-                <i />
-                <i />
-                <i />
+                <i style="--dot:0" />
+                <i style="--dot:1" />
+                <i style="--dot:2" />
               </span>
               <div class="dd-sc__said">
-                <Message initials="LN" name="Leo Novak" time={scene.reply.time} isInThread>
+                <Message {...LEO} time={reply.time} isInThread>
                   <div class="dd-m__t">
                     <CloneMark />
-                    {scene.reply.lines[0]}
+                    {reply.lines[0]}
                   </div>
-                  <div class="dd-m__t dd-sc__more">{scene.reply.lines[1]}</div>
+                  <div class="dd-m__t dd-sc__more">{reply.lines[1]}</div>
                 </Message>
               </div>
             </div>
@@ -252,18 +232,6 @@ if (SCENES.length !== 4) {
     animation-name: dd-sc-dot;
     animation-duration: 0.9s;
     animation-delay: calc(var(--dot) * 0.15s);
-  }
-
-  .dd-sc__typing i:nth-child(1) {
-    --dot: 0;
-  }
-
-  .dd-sc__typing i:nth-child(2) {
-    --dot: 1;
-  }
-
-  .dd-sc__typing i:nth-child(3) {
-    --dot: 2;
   }
 
   .dd-sc__said {

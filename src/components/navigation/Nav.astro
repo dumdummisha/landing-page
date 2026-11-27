@@ -4,7 +4,7 @@ import NewTabLink from '../actions/NewTabLink.astro'
 import Brand from './Brand.astro'
 
 interface Props {
-  links: readonly { href: string; label: string; isNewTab?: boolean }[]
+  links: readonly { href: string; label: string }[]
 }
 
 const { links } = Astro.props
@@ -13,7 +13,7 @@ const { links } = Astro.props
 <nav class="dd-nav">
   <Brand />
   <div class="dd-nav__links">
-    {links.map(({ href, label, isNewTab }) => (isNewTab ? <NewTabLink href={href}>{label}</NewTabLink> : <a href={href}>{label}</a>))}
+    {links.map(({ href, label }) => (href.startsWith('https:') ? <NewTabLink href={href}>{label}</NewTabLink> : <a href={href}>{label}</a>))}
   </div>
   <div class="dd-nav__end"><slot /></div>
 </nav>

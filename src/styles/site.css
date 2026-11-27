@@ -132,9 +132,7 @@ a:hover:not(.dd-btn):not(.dd-brand) {
   }
 }
 
-.dd-ico .dd-w1,
-.dd-ico .dd-w2,
-.dd-ico .dd-w3 {
+.dd-ico :is(.dd-w1, .dd-w2, .dd-w3) {
   animation: dd-march 1s linear infinite;
 }
 
@@ -147,9 +145,7 @@ a:hover:not(.dd-btn):not(.dd-brand) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dd-ico .dd-w1,
-  .dd-ico .dd-w2,
-  .dd-ico .dd-w3 {
+  .dd-ico :is(.dd-w1, .dd-w2, .dd-w3) {
     animation: none;
   }
 
