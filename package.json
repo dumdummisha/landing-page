@@ -3,12 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/tokens.ts && node scripts/fonts.ts && astro dev",
-    "build": "node scripts/tokens.ts && node scripts/fonts.ts && astro build",
-    "check": "node scripts/tokens.ts && node scripts/fonts.ts && astro check",
+    "dev": "node scripts/tokens.ts && astro dev",
+    "build": "node scripts/tokens.ts && astro build",
+    "check": "node scripts/tokens.ts && astro check",
     "format": "oxfmt",
-    "format:check": "oxfmt --check",
-    "fonts": "node scripts/fonts.ts --write"
+    "format:check": "oxfmt --check"
   },
   "dependencies": {
     "astro": "7.4.2"

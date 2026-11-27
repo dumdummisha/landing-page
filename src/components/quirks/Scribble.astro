@@ -6,11 +6,23 @@ interface Props {
   class?: string
 }
 
+// Characters outside the set the hand font can draw: ASCII and the no-break space. Must match the subset in
+// src/assets/fonts/caveat.woff2.
+const OUTSIDE_HAND_FONT = /[^\u0000-\u007f\u00a0]/u
+
 const { tilt = 3, class: className } = Astro.props
+const note = await Astro.slots.render('default')
+
+const outside = OUTSIDE_HAND_FONT.exec(note)
+if (outside) {
+  const codepoint = outside[0].codePointAt(0)!.toString(16).toUpperCase().padStart(4, '0')
+
+  throw new Error(`A hand note has "${outside[0]}" (U+${codepoint}), which the hand font cannot draw: ${note.trim()}`)
+}
 ---
 
 <div class:list={['dd-scribble', className]} style={`transform:rotate(var(--tilt-${tilt}));`}>
-  <span><slot /></span>
+  <span><Fragment set:html={note} /></span>
   <slot name="arrow" />
 </div>
 

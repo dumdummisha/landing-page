@@ -13,14 +13,20 @@ It has two pages and one redirect:
 - `src/components/`: one folder per part of the design system (`actions`, `band`, `chat`, `marketing`, `mascot`, `navigation`, `quirks`, `shell`, `status`), `Icon.astro` with the icon set in `icons.json`, and `landing/`, where each section holds its own copy.
 - `src/layouts/`: `Base` (the head, Open Graph tags, favicons and fonts) and `Canvas` (the yellow page the not-found page sits on).
 - `src/styles/`: `tokens.json`, a copy of the design system's tokens, and `site.css`, the styles every page shares. Each component's own styles are a `<style>` in its `.astro` file.
-- `scripts/`: `tokens.ts` writes `src/styles/tokens.css` (gitignored) from `tokens.json`; `fonts.ts` keeps the handwriting font in step with the site's characters.
+- `scripts/`: `tokens.ts` writes `src/styles/tokens.css` (gitignored) from `tokens.json`.
 - `public/`: the favicons, the web manifest, the Open Graph image and Caveat's OFL license.
 
 The design system is an artifact on claude.ai. `tokens.json`, `icons.json` and the favicons are copies of it and are never edited here.
 
 ## Fonts
 
-The display, sans and mono families come from Google Fonts through Astro's fonts API (`astro.config.ts`), which downloads them at build time, so a build needs network access to Google Fonts. Caveat, the handwriting font, is local: `src/assets/fonts/` holds its original WOFF2 and a subset with printable ASCII plus every non-ASCII character in the `.astro` sources. `dev`, `build` and `check` fail when that character set changes. `pnpm fonts` regenerates the subset and its manifest; it needs [uv](https://docs.astral.sh/uv/), which fetches the pinned FontTools and Brotli versions.
+The display, sans and mono families come from Google Fonts through Astro's fonts API (`astro.config.ts`), which downloads them at build time, so a build needs network access to Google Fonts. Caveat, the handwriting font, is local and only draws the hand notes (`src/components/quirks/Scribble.astro`). `src/assets/fonts/caveat.woff2` is a fixed subset of Caveat SemiBold (OFL) holding printable ASCII (U+0020-007E) and the no-break space (U+00A0). A hand note with any other character fails the build in `Scribble.astro`. The subset was made from Google Fonts' Caveat SemiBold WOFF2 (`caveat-original.woff2` below) with this command, which needs [uv](https://docs.astral.sh/uv/) to fetch the pinned FontTools and Brotli:
+
+```sh
+uvx --from fonttools==4.67.0 --with brotli==1.2.1 pyftsubset caveat-original.woff2 \
+  --output-file=src/assets/fonts/caveat.woff2 --flavor=woff2 --unicodes=U+0020-007E,U+00A0 \
+  --layout-features=kern,liga --name-IDs=0,1,2,3,4,5,6,13,14
+```
 
 ## Run it locally
 
