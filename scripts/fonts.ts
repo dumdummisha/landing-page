@@ -20,15 +20,16 @@ const astroFiles = (directory: string): string[] =>
   })
 
 const codepoints = new Set<number>()
+
 for (let codepoint = 0x20; codepoint <= 0x7e; codepoint += 1) {
   codepoints.add(codepoint)
 }
+
 codepoints.add(0xa0)
 
 for (const file of astroFiles('src')) {
   for (const character of readFileSync(file, 'utf8')) {
     const codepoint = character.codePointAt(0)
-
     if (codepoint !== undefined && codepoint > 0x7f) {
       codepoints.add(codepoint)
     }
@@ -38,6 +39,7 @@ for (const file of astroFiles('src')) {
 const unicodes = [...codepoints]
   .sort((left, right) => left - right)
   .map((codepoint) => `U+${codepoint.toString(16).toUpperCase().padStart(4, '0')}`)
+
 const manifest = `${unicodes.join('\n')}\n`
 
 if (process.argv[2] === '--write') {
@@ -58,6 +60,7 @@ if (process.argv[2] === '--write') {
     ],
     { stdio: 'inherit' }
   )
+
   writeFileSync(MANIFEST, manifest)
 } else if (process.argv[2] !== undefined) {
   throw new Error(`Unknown argument ${process.argv[2]}; use --write to regenerate the font`)

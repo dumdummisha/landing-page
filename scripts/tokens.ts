@@ -28,7 +28,6 @@ const LENGTH_FAMILIES = ['spacing', 'radius', 'tilt', 'size']
 const ALIAS = /^\{(.+)\}$/
 
 const tokens = JSON.parse(readFileSync(SOURCE, 'utf8')) as ITokens
-
 if (tokens.color.themes.length !== 1) {
   throw new Error(`${SOURCE} has ${tokens.color.themes.length} colour themes; only one is supported`)
 }

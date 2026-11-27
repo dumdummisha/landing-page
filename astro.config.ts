@@ -32,7 +32,9 @@ const googleFonts = Object.entries(tokens.type.families)
 const handOptions = {
   variants: [{ src: ['./src/assets/fonts/caveat.woff2'], weight: 600, style: 'normal' }],
 } satisfies { variants: [{ src: [string]; weight: number; style: 'normal' }] }
+
 const [handName, ...handFallbacks] = tokens.type.families.hand.split(',').map((face) => face.trim().replaceAll('"', ''))
+
 const handFont = {
   provider: fontProviders.local(),
   name: handName,
