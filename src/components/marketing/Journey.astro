@@ -1,37 +1,46 @@
 ---
 // A landing section told as a scroll journey, with no script. The story slot holds, in reading order, a pinned note
 // (.dd-jy__pin), one caption per step (.dd-jy__cap) and the cards. Step k's card sits in grid row k + 1 (row 1 is
-// a .dd-jy__slot--start spacer for step 0) and is a view timeline named --ck (.dd-jy__t) whose port is the focus
-// line. --s, the step, is the last card whose top has crossed that line: one constant animation per step on its
-// card's timeline, held after its range, and the later step wins. Anything shown for steps --from to --to takes
-// .dd-jy__on. Without scroll-driven animations, or in a window too short for the pinned layout, the captions sit
-// between their cards and --s is the last step, the end of the story.
+// a .dd-jy__slot--start spacer for step 0, whose --c0 is in scope for a section that animates something before
+// step 1) and is a view timeline named --ck (.dd-jy__t) whose port is the focus line. --s, the step, is the last
+// card whose top has crossed that line: one constant animation per step on its card's timeline, held after its
+// range, and the later step wins. Anything shown for steps --from to --to takes .dd-jy__on. Without scroll-driven
+// animations, or in a window too short for the pinned layout, the captions sit between their cards and --s is the
+// last step, the end of the story.
 //
 // The section tunes it from its own wrapper: --cols (the pinned column, a gap and the cards), --focus, --note (the
 // pinned note's height), --above (what the pin holds above the note), --capspace (room for its tallest caption),
 // --gap, --ground, --start and --lean, and the same on phones under 1000px, where the captions are left to screen
-// readers to give the cards the screen. The journey ends as soon as its last caption has been seen. The far and near
-// slots are decorative layers drifting at 0.5 and 1.6 times the page's speed over a dotted ground at 0.3, which
-// alone runs to the window's edges.
+// readers to give the cards the screen. The journey ends as soon as its last caption has been seen. The far slot
+// and the near scraps are decorative layers drifting at 0.5 and 1.6 times the page's speed over a dotted ground at
+// 0.3, which alone runs to the window's edges.
 interface Props {
   last: number
+  // Placed in percent of the journey, sized in pixels; color names a colour token.
+  near: { x: number; y: number; size: number; color: string; rotate: number }[]
 }
 
-const { last } = Astro.props
+const { last, near } = Astro.props
 const steps = Array.from({ length: last }, (_, i) => i + 1)
 const timelines = steps.map((step) => `--c${step}`).join(',')
 const names = steps.map((step) => `dd-jy-s${step}`).join(',')
-// --c0, the start spacer's, is in scope for a section that animates something before step 1.
-const scope = `--c0,${timelines}`
 ---
 
-<div class="dd-jy" style={`timeline-scope:${scope}`}>
+<div class="dd-jy" style={`timeline-scope:--c0,${timelines}`}>
   <div class="dd-jy__ground" aria-hidden="true">
     <div class="dd-jy__dots"></div>
   </div>
   <div class="dd-jy__sky" aria-hidden="true">
     <div class="dd-jy__far"><slot name="far" /></div>
-    <div class="dd-jy__near"><slot name="near" /></div>
+    <div class="dd-jy__near">
+      {
+        near.map((scrap) => (
+          <i
+            style={`left:${scrap.x}%;top:${scrap.y}%;width:${scrap.size}px;height:${scrap.size}px;background:var(--${scrap.color});rotate:${scrap.rotate}deg`}
+          />
+        ))
+      }
+    </div>
   </div>
   <div class="dd-jy__in" style={`--last:${last};--rows:${last + 1};--names:${names};--timelines:${timelines}`}>
     <slot />
@@ -192,21 +201,22 @@ const scope = `--c0,${timelines}`
         .dd-jy__near,
         .dd-jy__dots,
         .dd-jy :global(.dd-jy__card) {
+          animation-name: dd-jy-drift;
           animation-timing-function: linear;
           animation-fill-mode: both;
           animation-timeline: --jy;
         }
 
         .dd-jy__far {
-          animation-name: dd-jy-far;
+          --drift: 0.25;
         }
 
         .dd-jy__near {
-          animation-name: dd-jy-near;
+          --drift: -0.3;
         }
 
         .dd-jy__dots {
-          animation-name: dd-jy-dots;
+          --drift: 0.35;
         }
 
         /* A card leans towards the note while it is on the focus line, and sits back a little otherwise. */
@@ -289,33 +299,15 @@ const scope = `--c0,${timelines}`
     }
   }
 
-  @keyframes dd-jy-far {
+  /* A layer travels --drift of its own height plus the window's on each side of rest: a positive drift sinks while the
+     page scrolls, so the layer lags behind it, and a negative one rises, so the layer runs ahead. */
+  @keyframes dd-jy-drift {
     from {
-      transform: translateY(calc(-25% - 25svh));
+      transform: translateY(calc(-1 * var(--drift) * (100% + 100svh)));
     }
 
     to {
-      transform: translateY(calc(25% + 25svh));
-    }
-  }
-
-  @keyframes dd-jy-dots {
-    from {
-      transform: translateY(calc(-35% - 35svh));
-    }
-
-    to {
-      transform: translateY(calc(35% + 35svh));
-    }
-  }
-
-  @keyframes dd-jy-near {
-    from {
-      transform: translateY(calc(30% + 30svh));
-    }
-
-    to {
-      transform: translateY(calc(-30% - 30svh));
+      transform: translateY(calc(var(--drift) * (100% + 100svh)));
     }
   }
 

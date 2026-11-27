@@ -103,20 +103,12 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
     I take care of Emma's gift-card bug while you go swimming.
   </SectionHead>
   <div class="dd-day">
-    <Journey last={LAST}>
+    <Journey last={LAST} near={SCRAPS}>
       {
         HOURS.map((hour) => (
           <span slot="far" class="dd-day__hour" style={`top:${hour.y}%`}>
             {hour.label}
           </span>
-        ))
-      }
-      {
-        SCRAPS.map((scrap) => (
-          <i
-            slot="near"
-            style={`left:${scrap.x}%;top:${scrap.y}%;width:${scrap.size}px;height:${scrap.size}px;background:var(--${scrap.color});rotate:${scrap.rotate}deg`}
-          />
         ))
       }
       <div class="dd-jy__pin" aria-hidden="true">
@@ -524,7 +516,6 @@ const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
         .dd-day__note {
           position: relative;
           inset: auto;
-          width: auto;
           margin-top: var(--space-4);
         }
       }

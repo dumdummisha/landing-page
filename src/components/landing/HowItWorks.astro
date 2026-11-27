@@ -13,7 +13,8 @@ import Mascot from '../mascot/Mascot.astro'
 import StatusPill from '../status/StatusPill.astro'
 import EmmaAsks from './EmmaAsks.astro'
 
-// One caption per step: 0 is the intro, 1 to 10 the journey, 11 the end.
+// One caption per step: 0 is the intro, 1 to 10 the journey, 11 the end. Steps 4 to 9 are workers, each with a card
+// whose nudge sets it a few pixels off the column.
 const CAPTIONS = [
   {
     eyebrow: 'One request, start to finish',
@@ -38,31 +39,37 @@ const CAPTIONS = [
     eyebrow: '4 of 10 · Worker · Analysis',
     title: 'I work out what it needs.',
     text: 'A worker reads the request and the code, and works out what has to change and where.',
+    worker: { title: 'Analysis', note: 'what has to change, and where?', result: 'guest checkout · gift card', nudge: 0 },
   },
   {
     eyebrow: '5 of 10 · Worker · Ticket',
     title: 'I write the ticket.',
     text: 'Drafted from the thread and linked back to it, so the thread and the ticket point at each other.',
+    worker: { title: 'Ticket', note: 'drafted from the thread, linked back', result: 'SHOP-142 drafted', nudge: 16 },
   },
   {
     eyebrow: '6 of 10 · Worker · Code',
     title: 'I build it on a branch.',
     text: 'Implemented on its own branch, then opened as a pull request.',
+    worker: { title: 'Code', note: 'implemented on a branch, pull request', result: 'pull request #88', nudge: 0 },
   },
   {
     eyebrow: '7 of 10 · Worker · Review',
     title: 'A second AI reviews it.',
     text: 'The ticket and the code are each reviewed by a second AI, not by me.',
+    worker: { title: 'Review', note: 'ticket and code, each by a second AI', result: 'both reviewed', nudge: 20 },
   },
   {
     eyebrow: '8 of 10 · Worker · Deploy',
     title: 'I ship it.',
     text: 'You allow merges in this repository, so I merge my pull request and deploy it.',
+    worker: { title: 'Deploy', note: 'my pull request, merged and deployed', result: 'on dev', nudge: 6 },
   },
   {
     eyebrow: '9 of 10 · Worker · Deployment check',
     title: 'I check every deploy.',
     text: 'Checked after every deploy, before I tell anyone it worked.',
+    worker: { title: 'Deployment check', note: 'run after every deploy', result: 'passed', nudge: 14 },
   },
   {
     eyebrow: '10 of 10 · Reply',
@@ -97,17 +104,6 @@ const CLONE_PILLS = [
   { tone: 'ok', icon: 'check', label: 'Replied in the thread' },
   { tone: 'ok', icon: 'check', label: 'Ready for the next one' },
 ] as const
-
-// Workers are steps 4 to 9. The nudge sets each card a few pixels off the column.
-const FIRST_HELPER_STEP = 4
-const HELPERS = [
-  { title: 'Analysis', note: 'what has to change, and where?', result: 'guest checkout · gift card', nudge: 0 },
-  { title: 'Ticket', note: 'drafted from the thread, linked back', result: 'SHOP-142 drafted', nudge: 16 },
-  { title: 'Code', note: 'implemented on a branch, pull request', result: 'pull request #88', nudge: 0 },
-  { title: 'Review', note: 'ticket and code, each by a second AI', result: 'both reviewed', nudge: 20 },
-  { title: 'Deploy', note: 'my pull request, merged and deployed', result: 'on dev', nudge: 6 },
-  { title: 'Deployment check', note: 'run after every deploy', result: 'passed', nudge: 14 },
-]
 
 // One hand-drawn arrow between the clone's edge (x 6) and the active card's edge (x 114), across the focus line at
 // y 60, reshaped at every step: towards the card from the clone, or back to it from the card, ending a head's length
@@ -178,7 +174,7 @@ const SCRAPS = [
 ]
 
 const span = (from: number, to: number) => `--from:${from};--to:${to}`
-const timeline = (step: number) => `view-timeline-name:--c${step}`
+const slot = (step: number) => `--row:${step + 1};view-timeline-name:--c${step}`
 ---
 
 <Band tone="tint" id="how">
@@ -188,21 +184,13 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
     finished feature end to end with cURL. Anything that needs a decision comes back to you.
   </SectionHead>
   <div class="dd-jr">
-    <Journey last={LAST}>
+    <Journey last={LAST} near={SCRAPS}>
       {
         PLANES.map((plane) => (
           <i
             slot="far"
             class="dd-jr__plane"
             style={`left:${plane.x}%;top:${plane.y}%;width:${plane.size}px;height:${plane.size}px;rotate:${plane.rotate}deg`}
-          />
-        ))
-      }
-      {
-        SCRAPS.map((scrap) => (
-          <i
-            slot="near"
-            style={`left:${scrap.x}%;top:${scrap.y}%;width:${scrap.size}px;height:${scrap.size}px;background:var(--${scrap.color});rotate:${scrap.rotate}deg`}
           />
         ))
       }
@@ -264,14 +252,14 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
             </div>
             {i === 0 && <div class="dd-jy__slot dd-jy__slot--start" style="--row:1" />}
             {i === 1 && (
-              <div class="dd-jy__slot dd-jy__card dd-jy__t dd-jr__slack" style={`--row:2;${timeline(1)}`}>
+              <div class="dd-jy__slot dd-jy__card dd-jy__t dd-jr__slack" style={slot(1)}>
                 <Chat title="# shop-backend">
                   <EmmaAsks />
                 </Chat>
               </div>
             )}
             {i === 2 && (
-              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={`--row:3;${timeline(2)}`}>
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(2)}>
                 <Chat title="Leo Novak" isSelfDm>
                   <Message initials="LN" name="Leo Novak" time="10:31">
                     <div class="dd-m__t">
@@ -285,10 +273,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
             )}
             {i === 3 && (
               <>
-                <div
-                  class="dd-jy__slot dd-jy__card dd-jy__t dd-jy__stack dd-jr__answer"
-                  style={`--row:4;${timeline(3)}`}
-                >
+                <div class="dd-jy__slot dd-jy__card dd-jy__t dd-jy__stack dd-jr__answer" style={slot(3)}>
                   <span class="dd-jy__on dd-jr__waiting" style={span(0, 2)} aria-hidden="true">
                     <StatusPill tone="wait" icon="clock" label="Waiting for your answer" />
                   </span>
@@ -303,13 +288,13 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
                 </div>
               </>
             )}
-            {i >= FIRST_HELPER_STEP && i < FIRST_HELPER_STEP + HELPERS.length && (
+            {caption.worker && (
               <article
-                class="dd-jy__slot dd-jy__card dd-jy__t dd-jr__helper"
-                style={`--row:${i + 1};--nudge:${HELPERS[i - FIRST_HELPER_STEP].nudge}px;${timeline(i)}`}
+                class="dd-jy__slot dd-jy__card dd-jy__t dd-jr__worker"
+                style={`${slot(i)};--nudge:${caption.worker.nudge}px`}
               >
-                <div class="dd-jr__helper-top">
-                  <h4 class="heading-3">{HELPERS[i - FIRST_HELPER_STEP].title}</h4>
+                <div class="dd-jr__worker-top">
+                  <h4 class="heading-3">{caption.worker.title}</h4>
                   <span class="dd-jy__stack" aria-hidden="true">
                     <span class="dd-jy__on" style={span(0, i - 1)}>
                       <StatusPill tone="neutral" icon="dot" label="Queued" />
@@ -322,14 +307,12 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
                     </span>
                   </span>
                 </div>
-                <p class="dd-muted">{HELPERS[i - FIRST_HELPER_STEP].note}</p>
-                <span class="dd-jy__on dd-jr__result" style={span(i + 1, LAST)}>
-                  {HELPERS[i - FIRST_HELPER_STEP].result}
-                </span>
+                <p class="dd-muted">{caption.worker.note}</p>
+                <span class="dd-jy__on dd-jr__result" style={span(i + 1, LAST)}>{caption.worker.result}</span>
               </article>
             )}
             {i === 10 && (
-              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={`--row:11;${timeline(10)}`}>
+              <div class="dd-jy__slot dd-jy__card dd-jy__t" style={slot(10)}>
                 <Chat title="# shop-backend">
                   <Message initials="LN" name="Leo Novak" time="11:07">
                     <div class="dd-m__t">
@@ -341,9 +324,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
                 </Chat>
               </div>
             )}
-            {i === LAST && (
-              <div class="dd-jy__slot dd-jy__slot--end dd-jy__t" style={`--row:12;${timeline(LAST)}`} />
-            )}
+            {i === LAST && <div class="dd-jy__slot dd-jy__slot--end dd-jy__t" style={slot(LAST)} />}
           </>
         ))
       }
@@ -426,19 +407,19 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
     margin: 0 20px 0 70px;
   }
 
-  .dd-jr__helper {
+  .dd-jr__worker {
     background: var(--surface-200);
     padding: 16px 18px 14px;
   }
 
-  .dd-jr__helper-top {
+  .dd-jr__worker-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
   }
 
-  .dd-jr__helper p {
+  .dd-jr__worker p {
     font: 400 14px/22px var(--font-sans);
     margin-top: 2px;
   }
@@ -464,7 +445,7 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
         opacity: clamp(0, var(--s), 1);
       }
 
-      /* The helpers' zone is a ground behind their rows, with room for its label above the first and below the
+      /* The workers' zone is a ground behind their rows, with room for its label above the first and below the
          last. */
       .dd-jr__zone {
         display: block;
@@ -475,15 +456,15 @@ const timeline = (step: number) => `view-timeline-name:--c${step}`
         background: color-mix(in srgb, var(--surface-200) 55%, transparent);
       }
 
-      .dd-jr__helper {
+      .dd-jr__worker {
         margin: 0 var(--space-5) 0 calc(var(--space-5) + var(--nudge));
       }
 
-      .dd-jr__zone + .dd-jr__cap + .dd-jr__helper {
+      .dd-jr__zone + .dd-jr__cap + .dd-jr__worker {
         margin-top: var(--space-8);
       }
 
-      .dd-jr__helper + .dd-jr__cap + .dd-jy__card:not(.dd-jr__helper) {
+      .dd-jr__worker + .dd-jr__cap + .dd-jy__card:not(.dd-jr__worker) {
         margin-top: var(--space-5);
       }
 
