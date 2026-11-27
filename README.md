@@ -13,7 +13,7 @@ It has two pages and one redirect:
 - `src/components/`: one folder per part of the design system (`actions`, `band`, `chat`, `marketing`, `mascot`, `navigation`, `quirks`, `shell`, `status`), `Icon.astro` with the icon set in `icons.json`, and `landing/`, where each section holds its own copy.
 - `src/layouts/`: `Base` (the head, Open Graph tags, favicons and fonts) and `Canvas` (the yellow page the not-found page sits on).
 - `src/styles/`: `tokens.json`, a copy of the design system's tokens, and `site.css`, the styles every page shares. Each component's own styles are a `<style>` in its `.astro` file.
-- `scripts/`: `tokens.ts` writes `src/styles/tokens.css` (gitignored) from `tokens.json`.
+- `scripts/`: `tokens.ts` writes the tokens from `tokens.json` that the components and styles reference into `src/styles/tokens.css` (gitignored).
 - `public/`: the favicons, the web manifest, the Open Graph image and Caveat's OFL license.
 
 The design system is an artifact on claude.ai. `tokens.json`, `icons.json` and the favicons are copies of it and are never edited here.

@@ -16,7 +16,7 @@
 // 0.3, which alone runs to the window's edges.
 interface Props {
   last: number
-  // Placed in percent of the journey, sized in pixels; color names a colour token.
+  // Placed in percent of the journey, sized in pixels; color is a CSS colour.
   near: { x: number; y: number; size: number; color: string; rotate: number }[]
 }
 
@@ -36,7 +36,7 @@ const names = steps.map((step) => `dd-jy-s${step}`).join(',')
       {
         near.map((scrap) => (
           <i
-            style={`left:${scrap.x}%;top:${scrap.y}%;width:${scrap.size}px;height:${scrap.size}px;background:var(--${scrap.color});rotate:${scrap.rotate}deg`}
+            style={`left:${scrap.x}%;top:${scrap.y}%;width:${scrap.size}px;height:${scrap.size}px;background:${scrap.color};rotate:${scrap.rotate}deg`}
           />
         ))
       }
