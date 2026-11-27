@@ -8,6 +8,7 @@ To see the site locally, run `pnpm install` and `pnpm dev`. What Misha does is i
 
 - `/` is the landing page (`src/pages/index.astro`). Its calls to action are "Ask for an invite", an email to Michal, and "Book a call with Michal", a link to his Calendly page.
 - `/privacy` redirects permanently (`vercel.json`) to the [privacy policy](https://docs.dumdummisha.ai/privacy) in the docs.
+- `/terms` redirects permanently (`vercel.json`) to the [terms of use](https://docs.dumdummisha.ai/terms) in the docs.
 - `404.html` (`src/pages/404.astro`) serves any address that doesn't exist.
 
 ## Run it locally

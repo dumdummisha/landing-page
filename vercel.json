@@ -5,6 +5,11 @@
       "source": "/privacy",
       "destination": "https://docs.dumdummisha.ai/privacy",
       "permanent": true
+    },
+    {
+      "source": "/terms",
+      "destination": "https://docs.dumdummisha.ai/terms",
+      "permanent": true
     }
   ]
 }
